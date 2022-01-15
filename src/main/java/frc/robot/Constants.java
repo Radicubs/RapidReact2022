@@ -12,4 +12,27 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {}
+public final class Constants {
+
+    public static final int kSlotIdx = 0;
+
+    public static final int kPIDLoopIdx = 0;
+
+    public static final int kTimeoutMs = 30;
+
+    public static final double kP = 0.1;
+    public static final double kI = 0.001;
+    public static final double kD = 5;
+    public static final double kF = 1023.0/20660.0;
+
+    public static final int rightMotorFront = 0;
+    public static final int rightMotorBack = 1;
+    public static final int leftMotorFront = 2;
+    public static final int leftMotorBack = 3;
+
+    public static final int JOYSTICK = 0;
+    public static final int LEFT_X_AXIS = 1;
+    public static final int LEFT_Y_AXIS = 1;
+    public static final int RIGHT_X_AXIS = 4;
+    public static final int RIGHT_Y_AXIS = 5;
+}
