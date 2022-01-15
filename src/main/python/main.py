@@ -4,9 +4,9 @@ import imutils
 from collections import deque
 import time
 
-pts1 = deque(maxlen=32) # 32 for now
-pts2 = deque(maxlen=32) # 32 for now
-pts3 = deque(maxlen=32) # 32 for now
+pts1 = deque(maxlen=32)
+pts2 = deque(maxlen=32)
+pts3 = deque(maxlen=32)
 # pts4 = deque(maxlen=32)
 
 BLUE = True
@@ -30,6 +30,9 @@ def find_ball(icol, frame, pts):
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     center = None
+    radius = 0
+    x = 0
+    y = 0
     if len(cnts) > 0:
         c = max(cnts, key=cv2.contourArea)
         (x, y), radius = cv2.minEnclosingCircle(c)
@@ -38,14 +41,16 @@ def find_ball(icol, frame, pts):
         if radius > 10:
             cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
-        print(radius, center[0], center[1])
+        radius = radius
+        x = center[0]
+        y = center[1]
     pts.appendleft(center)
     for i in range(1, len(pts)):
         if pts[i - 1] is None or pts[i] is None:
             continue
         thickness = int(np.sqrt(64 / float(i + 1)) * 2.5)
         cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
-    return frame
+    return frame, (x, y), radius
 
 def concat_images(width, height, img1, img2, img3):#, img4):
     img1 = cv2.resize(img1, (width, height))
@@ -77,9 +82,15 @@ while True:
     frame2 = cv2.GaussianBlur(frame2, (11, 11), 0)
     frame3 = cv2.GaussianBlur(frame3, (11, 11), 0)
     # frame4 = cv2.GaussianBlur(frame4, (11, 11), 0)
-    img = find_ball(icol, frame1, pts1)
-    img2 = find_ball(icol, frame2, pts2)
-    img3 = find_ball(icol, frame3, pts3)
+    img, (x1, y1), r1 = find_ball(icol, frame1, pts1)
+    img2, (x2, y2), r2 = find_ball(icol, frame2, pts2)
+    img3, (x3, y3), r3 = find_ball(icol, frame3, pts3)
+    if max([r1, r2, r3]) == r1:
+        print(f"cam 1 - ({x1}, {y1})")
+    elif max([r1, r2, r3]) == r2:
+        print(f"cam 2 - ({x2}, {y2})")
+    elif max([r1, r2, r3]) == r3:
+        print(f"cam 3 - ({x3}, {y3})")
     # img4 = find_ball(icol, frame4, pts4)
     cv2.imshow(f"bigman", concat_images(500, 500, img, img2, img3))#, img4))
     k = cv2.waitKey(5) & 0xFF
@@ -91,6 +102,7 @@ cv2.destroyAllWindows()
 cam.release()
 cam2.release()
 cam3.release()
+# cam4.release()
 
 
 
