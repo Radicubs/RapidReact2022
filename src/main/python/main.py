@@ -5,8 +5,8 @@ from collections import deque
 import time
 
 pts1 = deque(maxlen=32) # 32 for now
-pts2 = deque(maxlen=32)
-pts3 = deque(maxlen=32)
+pts2 = deque(maxlen=32) # 32 for now
+pts3 = deque(maxlen=32) # 32 for now
 # pts4 = deque(maxlen=32)
 
 BLUE = True
