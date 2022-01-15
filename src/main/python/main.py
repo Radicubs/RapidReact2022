@@ -4,7 +4,7 @@ import imutils
 from collections import deque
 import time
 
-pts1 = deque(maxlen=32)
+pts1 = deque(maxlen=32) # 32 for now
 pts2 = deque(maxlen=32)
 pts3 = deque(maxlen=32)
 # pts4 = deque(maxlen=32)
