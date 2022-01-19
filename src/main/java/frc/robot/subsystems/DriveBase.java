@@ -21,10 +21,10 @@ public class DriveBase extends SubsystemBase {
     private List<VictorSPX> motors;
 
     public DriveBase() {
-        RMF = new VictorSPX(0);
-        RMB = new VictorSPX(1);
-        LMF = new VictorSPX(2);
-        LMB = new VictorSPX(3);
+        RMF = new VictorSPX(Constants.rightMotorFront);
+        RMB = new VictorSPX(Constants.rightMotorBack);
+        LMF = new VictorSPX(Constants.leftMotorFront);
+        LMB = new VictorSPX(Constants.leftMotorBack);
 
         motors = Arrays.asList(RMF, RMB, LMF, LMB);
 
@@ -33,21 +33,16 @@ public class DriveBase extends SubsystemBase {
             motor.setNeutralMode(NeutralMode.Brake);
         }
 
-        LMF.setInverted(true);
-        LMB.setInverted(true);
+        RMF.setInverted(true);
+        RMB.setInverted(true);
 
         setDefaultCommand(new TankDrive(this));
     }
 
     public void setValues(double m1, double m2, double m3, double m4) {
-        m1 = m1 * 2000.0 * 2048.0 / 600.0;
-        m2 = m2 * 2000.0 * 2048.0 / 600.0;
-        m3 = m3 * 2000.0 * 2048.0 / 600.0;
-        m4 = m4 * 2000.0 * 2048.0 / 600.0;
-
-        RMB.set(VictorSPXControlMode.Velocity, m1);
-        RMF.set(VictorSPXControlMode.Velocity, m2);
-        LMB.set(VictorSPXControlMode.Velocity, m3);
-        LMF.set(VictorSPXControlMode.Velocity, m4);
+        RMB.set(VictorSPXControlMode.PercentOutput, m1);
+        RMF.set(VictorSPXControlMode.PercentOutput, m2);
+        LMB.set(VictorSPXControlMode.PercentOutput, m3);
+        LMF.set(VictorSPXControlMode.PercentOutput, m4);
     }
 }

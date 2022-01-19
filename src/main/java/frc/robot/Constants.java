@@ -31,7 +31,7 @@ public final class Constants {
     public static final int leftMotorBack = 3;
 
     public static final int JOYSTICK = 0;
-    public static final int LEFT_X_AXIS = 1;
+    public static final int LEFT_X_AXIS = 0;
     public static final int LEFT_Y_AXIS = 1;
     public static final int RIGHT_X_AXIS = 4;
     public static final int RIGHT_Y_AXIS = 5;
