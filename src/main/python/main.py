@@ -4,7 +4,7 @@ import imutils
 from collections import deque
 import time
 
-BLUE = True
+BLUE = False
 RED = not BLUE
 if BLUE:
     icol = (89, 80, 180, 125, 240, 255)
@@ -58,6 +58,7 @@ def find_ball(icol, frame, pts):
 def concat_images(width, height, *imgs):
     return np.concatenate([cv2.resize(img, (width, height)) for img in imgs], axis=1)
 
+img_index = 0
 while True:
     imgs = []
     coords = []
@@ -69,10 +70,12 @@ while True:
         coords.append((x, y))
         radii.append(r)
     print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
-    cv2.imshow(f"bigman", concat_images(500, 500, *imgs))
+    cv2.imshow(f"bigman", imgs[img_index])
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
         break
+    elif 48 <= k < 48+NUM_CAMERAS:
+        img_index = k-48
     time.sleep(SLEEP_TIME / 1000)
 
 cv2.destroyAllWindows()
