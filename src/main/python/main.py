@@ -4,24 +4,28 @@ import imutils
 from collections import deque
 import time
 
-pts1 = deque(maxlen=32)
-pts2 = deque(maxlen=32)
-pts3 = deque(maxlen=32)
-# pts4 = deque(maxlen=32)
-
 BLUE = True
 RED = not BLUE
-
-FRAME_WIDTH = 700
-FRAME_HEIGHT = 700
-SLEEP_TIME = 1 # ms
-
 if BLUE:
     icol = (89, 80, 180, 125, 240, 255)
 else:
     icol = (0, 120, 180, 10, 240, 255)
 
+cv2.namedWindow("bigman")
+
+FRAME_WIDTH = 700
+FRAME_HEIGHT = 700
+SLEEP_TIME = 1  # ms
+
+NUM_CAMERAS = 3
+cams = [cv2.VideoCapture(i) for i in range(NUM_CAMERAS)]
+for cam in cams:
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
+pts = [deque(maxlen=32) for cam in cams]
+
 def find_ball(icol, frame, pts):
+    frame = cv2.GaussianBlur(frame, (11, 11), 0)
     lowHue, lowSat, lowVal, highHue, highSat, highVal = icol
     frameHSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(frameHSV, (lowHue, lowSat, lowVal), (highHue, highSat, highVal))
@@ -42,8 +46,7 @@ def find_ball(icol, frame, pts):
             cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
         radius = radius
-        x = center[0]
-        y = center[1]
+        x, y = center
     pts.appendleft(center)
     for i in range(1, len(pts)):
         if pts[i - 1] is None or pts[i] is None:
@@ -52,59 +55,26 @@ def find_ball(icol, frame, pts):
         cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
     return frame, (x, y), radius
 
-def concat_images(width, height, img1, img2, img3):#, img4):
-    img1 = cv2.resize(img1, (width, height))
-    img2 = cv2.resize(img2, (width, height))
-    img3 = cv2.resize(img3, (width, height))
-    # img4 = cv2.resize(img4, (width, height))
-    return np.concatenate((img1, img2, img3), axis=1)#, img4), axis=0)
-
-cam = cv2.VideoCapture(0)
-cam2 = cv2.VideoCapture(1)
-cam3 = cv2.VideoCapture(2)
-# cam4 = cv2.VideoCapture(3)
-cv2.namedWindow("bigman")
-cam.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
-cam.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
-cam2.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
-cam2.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
-cam3.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
-cam3.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
-# cam4.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
-# cam4.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
+def concat_images(width, height, *imgs):
+    return np.concatenate([cv2.resize(img, (width, height)) for img in imgs], axis=1)
 
 while True:
-    _, frame1 = cam.read()
-    _, frame2 = cam2.read()
-    _, frame3 = cam3.read()
-    # _, frame4 = cam4.read()
-    frame1 = cv2.GaussianBlur(frame1, (11, 11), 0)
-    frame2 = cv2.GaussianBlur(frame2, (11, 11), 0)
-    frame3 = cv2.GaussianBlur(frame3, (11, 11), 0)
-    # frame4 = cv2.GaussianBlur(frame4, (11, 11), 0)
-    img, (x1, y1), r1 = find_ball(icol, frame1, pts1)
-    img2, (x2, y2), r2 = find_ball(icol, frame2, pts2)
-    img3, (x3, y3), r3 = find_ball(icol, frame3, pts3)
-    if max([r1, r2, r3]) == r1:
-        print(f"cam 1 - ({x1}, {y1})")
-    elif max([r1, r2, r3]) == r2:
-        print(f"cam 2 - ({x2}, {y2})")
-    elif max([r1, r2, r3]) == r3:
-        print(f"cam 3 - ({x3}, {y3})")
-    # img4 = find_ball(icol, frame4, pts4)
-    cv2.imshow(f"bigman", concat_images(500, 500, img, img2, img3))#, img4))
+    imgs = []
+    coords = []
+    radii = []
+    for i, cam in enumerate(cams):
+        _, frame = cam.read()
+        img, (x, y), r = find_ball(icol, frame, pts[i])
+        imgs.append(img)
+        coords.append((x, y))
+        radii.append(r)
+    print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
+    cv2.imshow(f"bigman", concat_images(500, 500, *imgs))
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
         break
-    time.sleep(SLEEP_TIME/1000)
+    time.sleep(SLEEP_TIME / 1000)
 
 cv2.destroyAllWindows()
-cam.release()
-cam2.release()
-cam3.release()
-# cam4.release()
-
-
-
-
-
+for cam in cams:
+    cam.release()
