@@ -7,9 +7,9 @@ import time
 BLUE = False
 RED = not BLUE
 if BLUE:
-    icol = (89, 80, 180, 125, 240, 255)
+    icol = (89, 70, 160, 125, 240, 250)
 else:
-    icol = (0, 120, 180, 10, 240, 255)
+    icol = (0, 90, 150, 12, 255, 255)
 
 cv2.namedWindow("bigman")
 
@@ -17,7 +17,7 @@ FRAME_WIDTH = 700
 FRAME_HEIGHT = 700
 SLEEP_TIME = 1  # ms
 
-NUM_CAMERAS = 3
+NUM_CAMERAS = 2
 cams = [cv2.VideoCapture(i) for i in range(NUM_CAMERAS)]
 for cam in cams:
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
@@ -69,7 +69,8 @@ while True:
         imgs.append(img)
         coords.append((x, y))
         radii.append(r)
-    print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
+    if np.argmax(radii) != 0 and coords[np.argmax(radii)] != (0, 0):
+        print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
     cv2.imshow(f"bigman", imgs[img_index])
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
