@@ -4,6 +4,8 @@ import imutils
 from collections import deque
 import time
 
+HEADLESS = False
+
 BLUE = False
 RED = not BLUE
 if BLUE:
@@ -11,13 +13,14 @@ if BLUE:
 else:
     icol = (0, 90, 150, 12, 255, 255)
 
-cv2.namedWindow("bigman")
+if not HEADLESS:
+    cv2.namedWindow("bigman")
 
 FRAME_WIDTH = 700
 FRAME_HEIGHT = 700
 SLEEP_TIME = 1  # ms
 
-NUM_CAMERAS = 2
+NUM_CAMERAS = 1
 cams = [cv2.VideoCapture(i) for i in range(NUM_CAMERAS)]
 for cam in cams:
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
@@ -71,7 +74,8 @@ while True:
         radii.append(r)
     if np.argmax(radii) != 0 and coords[np.argmax(radii)] != (0, 0):
         print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
-    cv2.imshow(f"bigman", imgs[img_index])
+    if not HEADLESS:
+        cv2.imshow(f"bigman", imgs[img_index])
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
         break
@@ -79,6 +83,7 @@ while True:
         img_index = k-48
     time.sleep(SLEEP_TIME / 1000)
 
-cv2.destroyAllWindows()
+if not HEADLESS:
+    cv2.destroyAllWindows()
 for cam in cams:
     cam.release()
