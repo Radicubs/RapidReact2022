@@ -5,6 +5,12 @@ from collections import deque
 import time
 from _pynetworktables import NetworkTables
 
+HEADLESS = True
+FANCY = False
+
+if FANCY:
+    HEADLESS = True
+
 NetworkTables.initialize(server='10.75.3.2')
 sd = NetworkTables.getTable('opencv')
 
@@ -15,13 +21,14 @@ if BLUE:
 else:
     icol = (0, 90, 150, 12, 255, 255)
 
-cv2.namedWindow("bigman")
+if not HEADLESS:
+    cv2.namedWindow("bigman")
 
 FRAME_WIDTH = 700
 FRAME_HEIGHT = 700
 SLEEP_TIME = 1  # ms
 
-NUM_CAMERAS = 2
+NUM_CAMERAS = 1
 cams = [cv2.VideoCapture(i) for i in range(NUM_CAMERAS)]
 for cam in cams:
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
@@ -51,12 +58,13 @@ def find_ball(icol, frame, pts):
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
         radius = radius
         x, y = center
-    pts.appendleft(center)
-    for i in range(1, len(pts)):
-        if pts[i - 1] is None or pts[i] is None:
-            continue
-        thickness = int(np.sqrt(64 / float(i + 1)) * 2.5)
-        cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
+    if FANCY:
+        pts.appendleft(center)
+        for i in range(1, len(pts)):
+            if pts[i - 1] is None or pts[i] is None:
+                continue
+            thickness = int(np.sqrt(64 / float(i + 1)) * 2.5)
+            cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
     return frame, (x, y), radius
 
 def concat_images(width, height, *imgs):
@@ -76,16 +84,20 @@ while True:
     if np.argmax(radii) != 0 and coords[np.argmax(radii)] != (0, 0):
         print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
     out_str = f"{np.argmax(radii)} {coords[np.argmax(radii)][0]} {coords[np.argmax(radii)][1]} {max(radii)}"
-    cv2.imshow(f"bigman", imgs[img_index])
-    k = cv2.waitKey(5) & 0xFF
-    if k == 27:
-        break
-    elif 48 <= k < 48+NUM_CAMERAS:
-        img_index = k-48
-    time.sleep(SLEEP_TIME / 1000)
-
     sd.putString('latest', out_str)
+    if not HEADLESS:
+        cv2.imshow(f"bigman", imgs[img_index])
+        k = cv2.waitKey(5) & 0xFF
 
-cv2.destroyAllWindows()
+        if FANCY:
+            if k == 27:
+                break
+            elif 48 <= k < 48+NUM_CAMERAS:
+                img_index = k-48
+        time.sleep(SLEEP_TIME / 1000)
+    print(list(zip(coords, radii)))
+
+if not HEADLESS:
+    cv2.destroyAllWindows()
 for cam in cams:
     cam.release()
