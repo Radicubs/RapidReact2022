@@ -4,7 +4,11 @@ import imutils
 from collections import deque
 import time
 
-HEADLESS = False
+HEADLESS = True
+FANCY = False
+
+if FANCY:
+    HEADLESS = True
 
 BLUE = False
 RED = not BLUE
@@ -50,12 +54,13 @@ def find_ball(icol, frame, pts):
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
         radius = radius
         x, y = center
-    pts.appendleft(center)
-    for i in range(1, len(pts)):
-        if pts[i - 1] is None or pts[i] is None:
-            continue
-        thickness = int(np.sqrt(64 / float(i + 1)) * 2.5)
-        cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
+    if FANCY:
+        pts.appendleft(center)
+        for i in range(1, len(pts)):
+            if pts[i - 1] is None or pts[i] is None:
+                continue
+            thickness = int(np.sqrt(64 / float(i + 1)) * 2.5)
+            cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
     return frame, (x, y), radius
 
 def concat_images(width, height, *imgs):
@@ -76,12 +81,15 @@ while True:
         print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
     if not HEADLESS:
         cv2.imshow(f"bigman", imgs[img_index])
-    k = cv2.waitKey(5) & 0xFF
-    if k == 27:
-        break
-    elif 48 <= k < 48+NUM_CAMERAS:
-        img_index = k-48
-    time.sleep(SLEEP_TIME / 1000)
+        k = cv2.waitKey(5) & 0xFF
+
+        if FANCY:
+            if k == 27:
+                break
+            elif 48 <= k < 48+NUM_CAMERAS:
+                img_index = k-48
+        time.sleep(SLEEP_TIME / 1000)
+    print(list(zip(coords, radii)))
 
 if not HEADLESS:
     cv2.destroyAllWindows()
