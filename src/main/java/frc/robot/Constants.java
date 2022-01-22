@@ -35,4 +35,8 @@ public final class Constants {
     public static final int LEFT_Y_AXIS = 1;
     public static final int RIGHT_X_AXIS = 4;
     public static final int RIGHT_Y_AXIS = 5;
+    public static final int A_BUTTON = 1;
+
+    public static final int MaxCVX = 700;
+    public static final int MaxCVY = 700;
 }

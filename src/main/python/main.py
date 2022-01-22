@@ -3,6 +3,10 @@ import numpy as np
 import imutils
 from collections import deque
 import time
+from _pynetworktables import NetworkTables
+
+NetworkTables.initialize(server='10.75.3.2')
+sd = NetworkTables.getTable('opencv')
 
 BLUE = False
 RED = not BLUE
@@ -71,6 +75,7 @@ while True:
         radii.append(r)
     if np.argmax(radii) != 0 and coords[np.argmax(radii)] != (0, 0):
         print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
+    out_str = f"{np.argmax(radii)} {coords[np.argmax(radii)][0]} {coords[np.argmax(radii)][1]} {max(radii)}"
     cv2.imshow(f"bigman", imgs[img_index])
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
@@ -78,6 +83,8 @@ while True:
     elif 48 <= k < 48+NUM_CAMERAS:
         img_index = k-48
     time.sleep(SLEEP_TIME / 1000)
+
+    sd.putString('latest', out_str)
 
 cv2.destroyAllWindows()
 for cam in cams:
