@@ -6,13 +6,17 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveBase;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
+
+import static java.lang.Double.parseDouble;
 
 public class RotateToBall extends CommandBase {
 
     private final DriveBase drive;
     private final NetworkTableEntry entry;
     private boolean isFinished = false;
+    private double previous = 0;
 
     public RotateToBall(DriveBase drive) {
         this.drive = drive;
@@ -26,26 +30,36 @@ public class RotateToBall extends CommandBase {
     @Override
     public void execute() {
 
-        String[] entry = this.entry.getString("").split("null null null null");
+        String[] entry = this.entry.getString("null null null null").split(" ");
+        System.out.println(Arrays.toString(entry));
 
-        if(entry.length != 4) throw new InputMismatchException("OpenCV Networking is not responding with correct values!");
 
-        int cam = 0; // 0 front, 1 left, 2 back, 3 right
-        int x = 0; // X value of the location of the ball
-        int y = 0; // Y value of the location ball
-        int radius = 0; // radius of the ball, indicates size
+        if(entry.length != 4) {
+            System.out.println("ERROR: " + Arrays.toString(entry) + " Length = " + entry.length);
+            return;
+        }
+
+        double cam = -1; // 0 front, 1 left, 2 back, 3 right
+        double x = -1; // X value of the location of the ball
+        double y = -1; // Y value of the location ball
+        double radius = -1; // radius of the ball, indicates size
 
         try {
-            cam = Integer.parseInt(entry[0]);
-            x = Integer.parseInt(entry[1]);
-            y = Integer.parseInt(entry[2]);
-            radius = Integer.parseInt(entry[3]);
+            cam = Double.parseDouble(entry[0]);
+            x = Double.parseDouble(entry[1]);
+            y = Double.parseDouble(entry[2]);
+            radius = Double.parseDouble(entry[3]);
         } catch(NumberFormatException e) {
             return;
         }
 
+        if (x == -1 || x == 0) {
+            previous /= 2;
+            drive.setValues(previous, previous, previous, previous);
+            return;
+        }
 
-        if(cam == 0 && (x > (Constants.MaxCVY / 2) - 50 && x < (Constants.MaxCVY / 2) + 50)) {
+        /*if(cam == 0 && (x > (Constants.MaxCV / 2) - 50 && x < (Constants.MaxCV / 2) + 50)) {
             isFinished = true;
             return;
         }
@@ -55,15 +69,16 @@ public class RotateToBall extends CommandBase {
         //For two cameras only, follow the comment instructions
 
         if(cam == 2) { //change this to 1
-            if(x < Constants.MaxCVX / 2) {
+            if(x < Constants.MaxCV / 2) {
                 isLeft = true;
             }
         }
 
-        else if(cam == 1 || (cam == 0 && x < Constants.MaxCVY / 2)) isLeft = true;//take out the first part of the or
+        else if(cam == 1 || (cam == 0 && x < Constants.MaxCV / 2)) isLeft = true;//take out the first part of the or*/
 
-        int turnPercent = isLeft ? 10 : -10;
-        drive.setValues(turnPercent, turnPercent, turnPercent, turnPercent);
+        double turn = ((x - Constants.MaxCV / 2) / 750);
+        previous = turn;
+        drive.setValues(-turn, -turn, turn, turn);
     }
 
     @Override
