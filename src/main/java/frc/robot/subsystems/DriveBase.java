@@ -28,7 +28,7 @@ public class DriveBase extends SubsystemBase {
 
         motors = Arrays.asList(RMF, RMB, LMF, LMB);
 
-        for(VictorSPX motor : motors) {
+        for (VictorSPX motor : motors) {
             motor.configFactoryDefault();
             motor.setNeutralMode(NeutralMode.Brake);
         }
@@ -46,3 +46,4 @@ public class DriveBase extends SubsystemBase {
         LMF.set(VictorSPXControlMode.PercentOutput, m4);
     }
 }
+// I wanted to be a contributor lol -tanmay
