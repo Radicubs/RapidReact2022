@@ -10,10 +10,10 @@ sys.path.insert(0, './yolov5')
 
 # device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', path="models/pytorch.pt")
-model.conf = 0.05
+model = torch.hub.load('ultralytics/yolov5', 'custom', path="models/pytorch_3.pt")
+model.conf = 0.10
 
-original_img = cv2.imread('test_img/3.jpg')
+original_img = cv2.imread('test_img/2.jpg')
 img = original_img[..., ::-1] # OpenCV image (BGR to RGB)
 
 results = model(img, size=640)
