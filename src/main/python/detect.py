@@ -138,21 +138,24 @@ with torch.no_grad():
  
     gn = np.array(dataset.scaled_ims[0].shape)[[1, 0, 1, 0]]
     for batch, original_imgs in dataset:
-        im = torch.from_numpy(batch).to(device)
+        start_time = time.time()
+        im = torch.from_numpy(batch)
         im = im.half() if half else im.float()  # uint8 to fp16/32
         im /= 255  # 0 - 255 to 0.0 - 1.0
         if len(im.shape) == 3:
             im = im[None]  # expand for batch dim
             # honestly might be a more efficient torch operation to do this
             # this will operate in gpu memory
+        im.to(device)
         preds = model(im)
         preds = non_max_suppression(preds, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
  
         if not headless: # we want to visualize
             for i, img_pred in enumerate(preds):
-                for *xyxy, conf, cls in img_preds:
+                for *xyxy, conf, cls in img_pred:
                     det = (np.array(xyxy) / gn) * np.array([h,w,h,w])
                     original_imgs[i] = cv2.rectangle(original_imgs[i], (round(det[0].item()), round(det[1].item())), (round(det[2].item()), round(det[3].item())), (0, 255, 0), 2)
             print("test") 
             cv2.imshow("a", original_imgs[i])
             cv2.waitKey(1)
+        print("FPS: " + str(1.0 / (time.time() - start_time)))
