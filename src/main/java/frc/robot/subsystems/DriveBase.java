@@ -1,15 +1,19 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+<<<<<<< Updated upstream
 //import frc.robot.commands.MecanumDriveControl;
 import frc.robot.commands.TankDrive;
+=======
+import frc.robot.commands.MecanumDriveCommand;
+>>>>>>> Stashed changes
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +34,12 @@ public class DriveBase extends SubsystemBase {
 
         List<WPI_TalonFX> motors = Arrays.asList(rightBack, rightFront, leftBack, leftFront);
 
+<<<<<<< Updated upstream
         for (WPI_TalonFX motor : motors) {
+=======
+
+        for(WPI_TalonFX motor : motors) {
+>>>>>>> Stashed changes
             motor.configFactoryDefault();
 
             motor.configNeutralDeadband(0.001);
@@ -38,9 +47,15 @@ public class DriveBase extends SubsystemBase {
             /* Config sensor used for Primary PID [Velocity] */
             motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,
                     Constants.kPIDLoopIdx,
+<<<<<<< Updated upstream
                     // poo
                     Constants.kTimeoutMs);
 
+=======
+                    Constants.kTimeoutMs);
+
+
+>>>>>>> Stashed changes
             /* Config the peak and nominal outputs */
             motor.configNominalOutputForward(0, Constants.kTimeoutMs);
             motor.configNominalOutputReverse(0, Constants.kTimeoutMs);
@@ -62,7 +77,12 @@ public class DriveBase extends SubsystemBase {
         leftFront.setInverted(true);
         leftBack.setInverted(true);
 
+<<<<<<< Updated upstream
         // setDefaultCommand(new MecanumDriveControl(this));
+=======
+        setDefaultCommand(new MecanumDriveCommand(this));
+
+>>>>>>> Stashed changes
 
     }
 
@@ -80,6 +100,7 @@ public class DriveBase extends SubsystemBase {
 
     @Override
     public void periodic() {
+<<<<<<< Updated upstream
         /*
          * double stick =
          * Robot.robotContainer.controller.getRawAxis(RobotConstants.LEFT_Y_AXIS) / 3;
@@ -94,4 +115,19 @@ public class DriveBase extends SubsystemBase {
 
     }
 
+=======
+    /*
+    double stick = Robot.robotContainer.controller.getRawAxis(RobotConstants.LEFT_Y_AXIS) / 3;
+    System.out.println(stick);
+    if(Math.abs(stick) < 0.01) stick = 0;
+    System.out.println(stick);
+    double out = _talon.getMotorOutputPercent();
+    double targetVelocity_UnitsPer100ms = stick * 2000.0 * 2048.0 / 600.0;
+    /* 500 RPM in either direction
+    _talon.set(TalonFXControlMode.Velocity, targetVelocity_UnitsPer100ms); */
+
+    }
+
+
+>>>>>>> Stashed changes
 }

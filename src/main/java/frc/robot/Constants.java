@@ -39,8 +39,19 @@ public final class Constants {
     public static final int LEFT_Y_AXIS = 1;
     public static final int RIGHT_X_AXIS = 4;
     public static final int RIGHT_Y_AXIS = 5;
+<<<<<<< Updated upstream
     public static final int RIGHT_FALCON_FRONT = 0;
     public static final int RIGHT_FALCON_BACK = 0;
     public static final int LEFT_FALCON_FRONT = 0;
     public static final int LEFT_FALCON_BACK = 0;
+=======
+    public static final int A_BUTTON = 1;
+
+    public static final int RIGHT_FALCON_FRONT = 1;
+    public static final int RIGHT_FALCON_BACK = 3;
+    public static final int LEFT_FALCON_FRONT = 0;
+    public static final int LEFT_FALCON_BACK = 2;
+
+    public static final int LEFT_TRIGGER = 0;
+>>>>>>> Stashed changes
 }

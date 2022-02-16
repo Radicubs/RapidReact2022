@@ -25,10 +25,12 @@ public class MecanumDriveCommand extends CommandBase {
     public void execute() {
 
         double left = RobotContainer.controller.getRawAxis(Constants.LEFT_Y_AXIS) / 3;
-        double right = RobotContainer.controller.getRawAxis(Constants.LEFT_X_AXIS) / 3;
+        double right = -RobotContainer.controller.getRawAxis(Constants.LEFT_X_AXIS) / 3;
         double zRot = RobotContainer.controller.getRawAxis(Constants.RIGHT_X_AXIS) / 3;
 
-        MecanumDrive.WheelSpeeds speeds = driveCartesianIK(applyDeadband(left, 0.02), applyDeadband(right, 0.02), zRot, 0);
+        System.out.println("L: " + left + "   R: " + right + "   Z: " + zRot);
+
+        MecanumDrive.WheelSpeeds speeds = driveCartesianIK(applyDeadband(left, 0.01), applyDeadband(right, 0.01), zRot, RobotContainer.gyro.getAngle());
 
         driveBase.setValues(speeds.rearRight, speeds.frontRight, speeds.rearLeft, speeds.frontLeft);
     }
@@ -44,6 +46,7 @@ public class MecanumDriveCommand extends CommandBase {
             return 0.0;
         }
     }
+
 
 
 }
