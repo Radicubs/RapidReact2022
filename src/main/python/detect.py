@@ -54,33 +54,42 @@ class LoadWebcams:
                 self.scaled_ims[i] = scaled_im.copy()
             self.imgs[i] = scaled_im[..., ::-1].transpose(2, 0, 1) # explanation is like 10 lines below
  
-            self.threads[i] = Thread(target=self.update, args=([i, cap, s]), daemon=True)
+            self.threads[i] = Thread(target=self.capture, args=([i, cap, s]), daemon=True)
             print(f"Success ({self.frames[i]} frames {w}x{h} at {self.fps[i]:.2f} FPS)")
             self.threads[i].start()
  
-    def update(self, i, cap, stream):
-        w, h = self.img_size
+    def capture(self, i, cap, stream):
+        captured_count = 0
+        start_time = time.time()
         while cap.isOpened(): # this runs 60 times a second even without the time.sleep
-        #for _ in range(40):
+            #for _ in range(40):
             # cap.grab()
             # im = cv2.imread('/Users/raptor/cs/RapidReact2022/src/main/python/test_img/3.jpg') 
             # success = True
             success, im = cap.read() # reads in height, width, channels AND in BGR
-            if success:
-                # We need to crop to the aspect ratio first and then scale down
-                # Step 1: find the margin we need to cut
-                h_scaled = int((im.shape[1] / w) * h)
-                top_margin = int((im.shape[0] - h_scaled) / 2)
-                scaled_im = cv2.resize(im[top_margin:(top_margin+h_scaled), :], (w, h))
-                print("Cropped and scaled to " + str(scaled_im.shape))
-                if not headless:
-                    self.scaled_ims[i] = scaled_im.copy()
-                self.imgs[i] = scaled_im[..., ::-1].transpose(2, 0, 1) # explanation is like 10 lines below
-            else:
-                print("WARNING: video stream yikes yikes unresponsive")
-                self.imgs[i] = np.zeros_like(self.imgs[i])
-            # time.sleep(1 / (self.fps(i)+10)) # NOT NEEDED
- 
+            Thread(target=self.process_frame, args=([success, im, i]), daemon=True).start()
+            captured_count += 1
+            if captured_count % 60 == 0:
+                print("FPS: " + str(1.0 / (time.time() - start_time)))
+                start_time = time.time()
+            
+    def process_frame(self, success, im, i):
+        if success:
+            w, h = self.img_size
+            # We need to crop to the aspect ratio first and then scale down
+            # Step 1: find the margin we need to cut
+            h_scaled = int((im.shape[1] / w) * h)
+            top_margin = int((im.shape[0] - h_scaled) / 2)
+            scaled_im = cv2.resize(im[top_margin:(top_margin+h_scaled), :], (w, h))
+            if not headless:
+                self.scaled_ims[i] = scaled_im.copy()
+            self.imgs[i] = scaled_im[..., ::-1].transpose(2, 0, 1) # explanation is like 10 lines below
+        else:
+            print("WARNING: video stream yikes yikes unresponsive")
+            self.imgs[i] = np.zeros_like(self.imgs[i])
+        # time.sleep(1 / (self.fps(i)+10)) # NOT NEEDED
+        
+            
     def __iter__(self):
         return self
  
@@ -155,7 +164,6 @@ with torch.no_grad():
                 for *xyxy, conf, cls in img_pred:
                     det = (np.array(xyxy) / gn) * np.array([h,w,h,w])
                     original_imgs[i] = cv2.rectangle(original_imgs[i], (round(det[0].item()), round(det[1].item())), (round(det[2].item()), round(det[3].item())), (0, 255, 0), 2)
-            print("test") 
             cv2.imshow("a", original_imgs[i])
             cv2.waitKey(1)
-        print("FPS: " + str(1.0 / (time.time() - start_time)))
+        print("FPS inference: " + str(1.0 / (time.time() - start_time)))
