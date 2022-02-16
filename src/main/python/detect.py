@@ -1,15 +1,18 @@
 import enum
 import os
+from re import X
 from sre_constants import SUCCESS
 import sys
 import cv2
 import math
+import networktables
 import torch
 import torch.backends.cudnn as cudnn
 import numpy as np
 import time
 from PIL import Image
 from threading import Thread
+from networktables import NetworkTables
  
 sys.path.insert(0, './yolov5')
  
@@ -70,7 +73,7 @@ class LoadWebcams:
             Thread(target=self.process_frame, args=([success, im, i]), daemon=True).start()
             captured_count += 1
             if captured_count % 60 == 0:
-                print("FPS: " + str(1.0 / (time.time() - start_time)))
+                print("Camera seconds per frame: " + str(1.0 / (time.time() - start_time)))
                 start_time = time.time()
             
     def process_frame(self, success, im, i):
@@ -98,12 +101,12 @@ class LoadWebcams:
         return self.imgs, self.scaled_ims.copy()
  
  
-cams = [0]
-# device = "cpu"
-device = "0" # gpu
+cams = [1]
+device = "cpu"
+# device = "0" # gpu
 headless = False
  
-weights = "./models/pytorch_3.pt"
+weights = "./models/pytorch_3_b1.onnx"
 dnn=False  # use OpenCV DNN for ONNX inference
 data = "models/data.yaml"
 imgsz=(640, 352)  # inference size (width, height)
@@ -114,6 +117,12 @@ classes = None
 agnostic_nms = False
 max_det = 10
  
+usenetworktables = False
+if usenetworktables:
+    ip = "roborio-7503-FRC.local"
+    NetworkTables.initialize(server=ip)
+    datatable = NetworkTables.getTable("data") 
+
 if device == "cpu":
     os.environ['CUDA_VISIBLE_DEVICES'] = '-1'  # force torch.cuda.is_available() = False
 else:  # non-cpu device requested
@@ -152,18 +161,33 @@ with torch.no_grad():
         im = im.half() if half else im.float()  # uint8 to fp16/32
         im /= 255  # 0 - 255 to 0.0 - 1.0
         if len(im.shape) == 3:
-            im = im[None]  # expand for batch dim
-            # honestly might be a more efficient torch operation to do this
-            # this will operate in gpu memory
+            im = im[None]
         im.to(device)
         preds = model(im)
         preds = non_max_suppression(preds, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
  
-        if not headless: # we want to visualize
-            for i, img_pred in enumerate(preds):
-                for *xyxy, conf, cls in img_pred:
-                    det = (np.array(xyxy) / gn) * np.array([h,w,h,w])
-                    original_imgs[i] = cv2.rectangle(original_imgs[i], (round(det[0].item()), round(det[1].item())), (round(det[2].item()), round(det[3].item())), (0, 255, 0), 2)
-            cv2.imshow("a", original_imgs[i])
-            cv2.waitKey(1)
+        detected_str = ""
+ 
+        for i, img_pred in enumerate(preds):
+            for *xyxy, conf, cls in img_pred:
+                det = (np.array(xyxy) / gn) * np.array([h,w,h,w])
+                x1 = round(det[0].item()) 
+                y1 = round(det[1].item())
+                x2 = round(det[2].item())
+                y2 = round(det[3].item())
+                
+                detected_str += " ".join([str(x) for x in [((x1 + x2) / 2), ((y1 + y2) / 2), (0.5 * math.sqrt((x2 - x1)^2 + (y2 - y1)^2))]])
+                detected_str += "  " # separates out ball elements
+                
+                if view_img:
+                    original_imgs[i] = cv2.rectangle(original_imgs[i], (x1, y1), (x2, y2), (0, 255, 0), 2)
+            if view_img:
+                cv2.imshow(str(i), original_imgs[i])
+                cv2.waitKey(1)
+            
+            if usenetworktables:
+                datatable.putString(str(i), detected_str)
+                
+            print(detected_str)
+
         print("FPS inference: " + str(1.0 / (time.time() - start_time)))
