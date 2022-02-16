@@ -106,10 +106,10 @@ device = "cpu"
 # device = "0" # gpu
 headless = False
  
-weights = "./models/pytorch_3_b1.onnx"
+weights = "./models/pytorch_3.onnx"
 dnn=False  # use OpenCV DNN for ONNX inference
 data = "models/data.yaml"
-imgsz=(640, 352)  # inference size (width, height)
+imgsz=(640, 320)  # inference size (width, height)
 h,w = imgsz
 conf_thres = 0.25
 iou_thres = 0.45
@@ -155,7 +155,8 @@ with torch.no_grad():
     dataset = LoadWebcams(cams, imgsz)
  
     gn = np.array(dataset.scaled_ims[0].shape)[[1, 0, 1, 0]]
-    for batch, original_imgs in dataset:
+    for batch, original_imgs in dataset:        
+        
         start_time = time.time()
         im = torch.from_numpy(batch)
         im = im.half() if half else im.float()  # uint8 to fp16/32
