@@ -24,9 +24,9 @@ public class MecanumDriveCommand extends CommandBase {
     @Override
     public void execute() {
 
-        double left = RobotContainer.controller.getRawAxis(Constants.LEFT_Y_AXIS) / 3;
-        double right = -RobotContainer.controller.getRawAxis(Constants.LEFT_X_AXIS) / 3;
-        double zRot = RobotContainer.controller.getRawAxis(Constants.RIGHT_X_AXIS) / 3;
+        double left = RobotContainer.controller.getRawAxis(Constants.LEFT_Y_AXIS) / 2;
+        double right = -RobotContainer.controller.getRawAxis(Constants.LEFT_X_AXIS) / 2;
+        double zRot = RobotContainer.controller.getRawAxis(Constants.RIGHT_X_AXIS) / 2;
 
         System.out.println("L: " + left + "   R: " + right + "   Z: " + zRot);
 
