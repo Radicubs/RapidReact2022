@@ -1,3 +1,5 @@
+# export OPENBLAS_CORETYPE=ARMV8
+
 import enum
 import os
 from re import X
@@ -101,12 +103,12 @@ class LoadWebcams:
         return self.imgs, self.scaled_ims.copy()
  
  
-cams = [1]
-device = "cpu"
-# device = "0" # gpu
-headless = False
+cams = [0]
+# device = "cpu"
+device = "0" # gpu
+headless = True
  
-weights = "./models/pytorch_3.onnx"
+weights = "./models/pytorch_3.pt"
 dnn=False  # use OpenCV DNN for ONNX inference
 data = "models/data.yaml"
 imgsz=(640, 320)  # inference size (width, height)
@@ -117,7 +119,7 @@ classes = None
 agnostic_nms = False
 max_det = 10
  
-usenetworktables = False
+usenetworktables = True
 if usenetworktables:
     ip = "roborio-7503-FRC.local"
     NetworkTables.initialize(server=ip)
@@ -150,7 +152,9 @@ with torch.no_grad():
  
     if not headless:
         view_img = check_imshow()
- 
+    else:
+        view_img = False
+
     cudnn.benchmark = True
     dataset = LoadWebcams(cams, imgsz)
  
@@ -163,11 +167,11 @@ with torch.no_grad():
         im /= 255  # 0 - 255 to 0.0 - 1.0
         if len(im.shape) == 3:
             im = im[None]
-        im.to(device)
+        im = im.to(device)
         preds = model(im)
         preds = non_max_suppression(preds, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
  
-        detected_str = ""
+        detected_str = "nothing"
  
         for i, img_pred in enumerate(preds):
             for *xyxy, conf, cls in img_pred:
@@ -177,6 +181,8 @@ with torch.no_grad():
                 x2 = round(det[2].item())
                 y2 = round(det[3].item())
                 
+                if (detected_str == "nothing"):
+                    detected_str = ""
                 detected_str += " ".join([str(x) for x in [((x1 + x2) / 2), ((y1 + y2) / 2), (0.5 * math.sqrt((x2 - x1)^2 + (y2 - y1)^2))]])
                 detected_str += "  " # separates out ball elements
                 
