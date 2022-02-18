@@ -108,7 +108,7 @@ cams = [0]
 device = "0" # gpu
 headless = True
  
-weights = "./models/pytorch_3.pt"
+weights = "./models/pytorch_3_b1.onnx"
 dnn=False  # use OpenCV DNN for ONNX inference
 data = "models/data.yaml"
 imgsz=(640, 320)  # inference size (width, height)
@@ -118,6 +118,7 @@ iou_thres = 0.45
 classes = None
 agnostic_nms = False
 max_det = 10
+bs = len(cams) # batch size
  
 usenetworktables = True
 if usenetworktables:
@@ -156,6 +157,9 @@ with torch.no_grad():
         view_img = False
 
     cudnn.benchmark = True
+    
+    model.warmup(imgsz=(1 if pt else bs, 3, *imgsz), half=half)  # warmup
+    
     dataset = LoadWebcams(cams, imgsz)
  
     gn = np.array(dataset.scaled_ims[0].shape)[[1, 0, 1, 0]]
