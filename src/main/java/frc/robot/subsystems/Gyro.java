@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -22,6 +23,10 @@ public class Gyro extends SubsystemBase {
     @Override
     public void periodic() {
         if(RobotContainer.controller.getRawButton(Constants.LEFT_TRIGGER)) gyro.calibrate();
+    }
+
+    public Rotation2d getRotation2d() {
+        return gyro.getRotation2d();
     }
 
 }
