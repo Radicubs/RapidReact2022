@@ -5,6 +5,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -33,9 +35,11 @@ public class DifferentialDriveBase extends SubsystemBase {
     private DifferentialDrive differentialDrive;
 
     private final DifferentialDriveOdometry differentialDriveOdometry;
-
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltSecondsPerMeter, Constants.kaVoltSecondsSquaredPerMeter);
     private double leftEncoderOffset;
     private double rightEncoderOffset;
+    private PIDController left;
+    private PIDController right;
 
     public DifferentialDriveBase() {
         rightFront = new WPI_TalonFX(Constants.RIGHT_FALCON_FRONT);
@@ -75,7 +79,18 @@ public class DifferentialDriveBase extends SubsystemBase {
         leftEncoderOffset = leftFront.getSelectedSensorPosition(0);
         rightEncoderOffset = rightFront.getSelectedSensorPosition(0);
 
+        left = new PIDController(Constants.kPDriveVel, 0, 0);
+        right = new PIDController(Constants.kPDriveVel, 0, 0);
+
         setDefaultCommand(new TankDrive(this));
+    }
+
+    public PIDController getLeftPID() {
+        return left;
+    }
+
+    public PIDController getRightPID() {
+        return right;
     }
 
     public void periodic() {
@@ -84,6 +99,9 @@ public class DifferentialDriveBase extends SubsystemBase {
         System.out.println("Left distance travelled: " + getLeftEncoderDistance());
     }
 
+    public SimpleMotorFeedforward getFeedforward() {
+        return feedforward;
+    }
     public double getLeftEncoderPosition() {
         return -(leftFront.getSelectedSensorPosition(0) - leftEncoderOffset);
     }
@@ -127,8 +145,8 @@ public class DifferentialDriveBase extends SubsystemBase {
     }
 
     public void tankDriveVolts(double leftVolts, double rightVolts) {
-        leftMotors.setVoltage(leftVolts);
-        rightMotors.setVoltage(rightVolts);
+        leftMotors.setVoltage(leftVolts / 12);
+        rightMotors.setVoltage(rightVolts / 12);
         differentialDrive.feed();
     }
 
@@ -144,5 +162,4 @@ public class DifferentialDriveBase extends SubsystemBase {
         differentialDrive.tankDrive(m1, m3);
         differentialDrive.feed();
     }
-
 }
