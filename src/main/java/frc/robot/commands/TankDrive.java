@@ -22,21 +22,16 @@ public class TankDrive extends CommandBase {
         double left = RobotContainer.controller.getRawAxis(Constants.LEFT_Y_AXIS);
         double right = RobotContainer.controller.getRawAxis(Constants.RIGHT_Y_AXIS);
 
-
         if(Math.abs(left) < 0.01) left = 0;
         if(Math.abs(right) < 0.01) right = 0;
 
         driveBase.setValues(right, right, left, left);
     }
 
-
     public void end(boolean interrupted) {}
-
 
     public boolean isFinished() {
         return false;
     }
-
-
 
 }

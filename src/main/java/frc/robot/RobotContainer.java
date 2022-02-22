@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.BallDrive;
+import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.DifferentialDriveBase;
 import frc.robot.subsystems.DriveBase;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -63,7 +64,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // ballButton.toggleWhenPressed(new BallDrive(driveBase, table.getEntry("0")));
-    ballButton.whenPressed(driveBase::resetEncoders);
+    // ballButton.whenPressed(driveBase::resetEncoders);
+    ballButton.whenHeld(new TurnToAngle(new Translation2d(1,1), driveBase.getPose(), driveBase));
   }
 
   /**

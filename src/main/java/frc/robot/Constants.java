@@ -69,4 +69,10 @@ public final class Constants {
     public static final int LEFT_FALCON_BACK = 0;
 
     public static final int LEFT_TRIGGER = 2;
+
+    public static double kTurnP = 0.027;
+    public static double kTurnI = 0.0000;
+    public static double kTurnD = 0.003;
+    public static double kTurnToleranceDeg = 1;
+    public static double kTurnRateToleranceDegPerS = 1;
 }

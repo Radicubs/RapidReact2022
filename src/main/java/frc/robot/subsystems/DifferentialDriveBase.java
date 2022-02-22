@@ -95,8 +95,8 @@ public class DifferentialDriveBase extends SubsystemBase {
 
     public void periodic() {
         differentialDriveOdometry.update(RobotContainer.gyro.getRotation2d(), getLeftEncoderDistance(), getRightEncoderDistance());
-        System.out.println("Right distance travelled: " + getRightEncoderDistance());
-        System.out.println("Left distance travelled: " + getLeftEncoderDistance());
+        // System.out.println("Right distance travelled: " + getRightEncoderDistance());
+        // System.out.println("Left distance travelled: " + getLeftEncoderDistance());
     }
 
     public SimpleMotorFeedforward getFeedforward() {
@@ -158,8 +158,16 @@ public class DifferentialDriveBase extends SubsystemBase {
         differentialDrive.setMaxOutput(maxOutput);
     }
 
+    public double getHeading() {
+        return RobotContainer.gyro.getRotation2d().getDegrees();
+    }
+
     public void setValues(double m1, double m2, double m3, double m4) {
         differentialDrive.tankDrive(m1, m3);
         differentialDrive.feed();
+    }
+
+    public void arcadeDrive(double y, double turn) {
+        differentialDrive.arcadeDrive(y, turn);
     }
 }
