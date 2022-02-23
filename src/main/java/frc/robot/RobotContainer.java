@@ -23,8 +23,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.BallDrive;
+import frc.robot.commands.Turn2Angle;
 import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.DifferentialDriveBase;
 import frc.robot.subsystems.DriveBase;
@@ -47,6 +49,7 @@ public class RobotContainer {
   public static final Gyro gyro = new Gyro();
   private final NetworkTable table;
   private final JoystickButton ballButton = new JoystickButton(controller, Constants.A_BUTTON);
+  private final JoystickButton gyroCallibrate = new JoystickButton(controller, Constants.L_BUMP);
 
   public static Joystick controller = new Joystick(Constants.JOYSTICK);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -66,6 +69,7 @@ public class RobotContainer {
     // ballButton.toggleWhenPressed(new BallDrive(driveBase, table.getEntry("0")));
     // ballButton.whenPressed(driveBase::resetEncoders);
     ballButton.whenHeld(new TurnToAngle(new Translation2d(1,1), driveBase.getPose(), driveBase));
+    gyroCallibrate.toggleWhenPressed(new StartEndCommand(gyro::recal, () -> System.out.print(""), gyro));//lamda for requireNonNull
   }
 
   /**
