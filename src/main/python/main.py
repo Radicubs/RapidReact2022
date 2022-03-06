@@ -3,12 +3,16 @@ import numpy as np
 import imutils
 from collections import deque
 import time
+from _pynetworktables import NetworkTables
 
 HEADLESS = True
 FANCY = False
 
 if FANCY:
     HEADLESS = True
+
+NetworkTables.initialize(server='10.75.3.2')
+sd = NetworkTables.getTable('opencv')
 
 BLUE = False
 RED = not BLUE
@@ -20,9 +24,9 @@ else:
 if not HEADLESS:
     cv2.namedWindow("bigman")
 
-FRAME_WIDTH = 700
-FRAME_HEIGHT = 700
-SLEEP_TIME = 1  # ms
+FRAME_WIDTH = 500
+FRAME_HEIGHT = 500
+SLEEP_TIME = 1000/60  # ms
 
 NUM_CAMERAS = 1
 cams = [cv2.VideoCapture(i) for i in range(NUM_CAMERAS)]
@@ -32,7 +36,7 @@ for cam in cams:
 pts = [deque(maxlen=32) for cam in cams]
 
 def find_ball(icol, frame, pts):
-    frame = cv2.GaussianBlur(frame, (11, 11), 0)
+    frame = cv2.GaussianBlur(frame, (5, 5), 0)
     lowHue, lowSat, lowVal, highHue, highSat, highVal = icol
     frameHSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(frameHSV, (lowHue, lowSat, lowVal), (highHue, highSat, highVal))
@@ -49,7 +53,7 @@ def find_ball(icol, frame, pts):
         (x, y), radius = cv2.minEnclosingCircle(c)
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-        if radius > 10:
+        if radius > 25:
             cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
         radius = radius
@@ -79,6 +83,8 @@ while True:
         radii.append(r)
     if np.argmax(radii) != 0 and coords[np.argmax(radii)] != (0, 0):
         print(f"cam {np.argmax(radii)} - {coords[np.argmax(radii)]}")
+    out_str = f"{np.argmax(radii)} {coords[np.argmax(radii)][0]} {coords[np.argmax(radii)][1]} {max(radii)}"
+    sd.putString('latest', out_str)
     if not HEADLESS:
         cv2.imshow(f"bigman", imgs[img_index])
         k = cv2.waitKey(5) & 0xFF
@@ -88,7 +94,8 @@ while True:
                 break
             elif 48 <= k < 48+NUM_CAMERAS:
                 img_index = k-48
-        time.sleep(SLEEP_TIME / 1000)
+    time.sleep(SLEEP_TIME / 1000)
+    print(out_str)
     print(list(zip(coords, radii)))
 
 if not HEADLESS:
