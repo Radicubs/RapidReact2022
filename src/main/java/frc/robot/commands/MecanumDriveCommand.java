@@ -5,14 +5,15 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.MecanumDriveBase;
 
 import static edu.wpi.first.wpilibj.drive.MecanumDrive.driveCartesianIK;
 
 public class MecanumDriveCommand extends CommandBase {
 
-    private final DriveBase driveBase;
+    private final MecanumDriveBase driveBase;
 
-    public MecanumDriveCommand(DriveBase driveBase) {
+    public MecanumDriveCommand(MecanumDriveBase driveBase) {
         this.driveBase = driveBase;
         addRequirements(driveBase);
     }
@@ -24,11 +25,13 @@ public class MecanumDriveCommand extends CommandBase {
     @Override
     public void execute() {
 
-        double left = RobotContainer.controller.getRawAxis(Constants.LEFT_Y_AXIS) / 3;
-        double right = RobotContainer.controller.getRawAxis(Constants.LEFT_X_AXIS) / 3;
-        double zRot = RobotContainer.controller.getRawAxis(Constants.RIGHT_X_AXIS) / 3;
+        double left = RobotContainer.controller.getRawAxis(Constants.LEFT_Y_AXIS) / 2;
+        double right = -RobotContainer.controller.getRawAxis(Constants.LEFT_X_AXIS) / 2;
+        double zRot = RobotContainer.controller.getRawAxis(Constants.RIGHT_X_AXIS) / 2;
 
-        MecanumDrive.WheelSpeeds speeds = driveCartesianIK(applyDeadband(left, 0.02), applyDeadband(right, 0.02), zRot, 0);
+        System.out.println("L: " + left + "   R: " + right + "   Z: " + zRot);
+
+        MecanumDrive.WheelSpeeds speeds = driveCartesianIK(applyDeadband(left, 0.01), applyDeadband(right, 0.01), zRot, RobotContainer.gyro.getAngle());
 
         driveBase.setValues(speeds.rearRight, speeds.frontRight, speeds.rearLeft, speeds.frontLeft);
     }
@@ -44,6 +47,7 @@ public class MecanumDriveCommand extends CommandBase {
             return 0.0;
         }
     }
+
 
 
 }

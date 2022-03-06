@@ -3,24 +3,21 @@ package frc.robot.commands;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
+import frc.robot.subsystems.DifferentialDriveBase;
 import frc.robot.subsystems.DriveBase;
 
 import java.util.Arrays;
-import java.util.InputMismatchException;
-
-import static java.lang.Double.parseDouble;
 
 public class RotateToBall extends CommandBase {
 
-    private final DriveBase drive;
+    private final DifferentialDriveBase drive;
     private final NetworkTableEntry entry;
     private boolean isFinished = false;
     private double previous = 0;
 
-    public RotateToBall(DriveBase drive) {
+    public RotateToBall(DifferentialDriveBase drive, NetworkTableEntry entry) {
         this.drive = drive;
-        entry = RobotContainer.networkTable.getTable("opencv").getEntry("latest");
+        this.entry = entry;
 
         addRequirements(drive);
     }
@@ -55,7 +52,7 @@ public class RotateToBall extends CommandBase {
 
         if (x == -1 || x == 0) {
             previous /= 2;
-            drive.setValues(previous, previous, previous, previous);
+            drive.setValues(previous, previous);
             return;
         }
 
@@ -78,7 +75,7 @@ public class RotateToBall extends CommandBase {
 
         double turn = ((x - Constants.MaxCV / 2) / 750);
         previous = turn;
-        drive.setValues(-turn, -turn, turn, turn);
+        drive.setValues(-turn, turn);
     }
 
     @Override

@@ -2,48 +2,56 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.TankDrive;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DriveBase extends SubsystemBase {
+public abstract class DriveBase extends SubsystemBase {
 
-    private VictorSPX RMF; // Right Motor Front
-    private VictorSPX LMF; // Left Motor Front
-    private VictorSPX RMB; // Right Motor Back
-    private VictorSPX LMB; // Left Motor Back
-    private List<VictorSPX> motors;
+    protected WPI_TalonFX rightFront;
+    protected WPI_TalonFX rightBack;
+    protected WPI_TalonFX leftFront;
+    protected WPI_TalonFX leftBack;
 
     public DriveBase() {
-        RMF = new VictorSPX(Constants.rightMotorFront);
-        RMB = new VictorSPX(Constants.rightMotorBack);
-        LMF = new VictorSPX(Constants.leftMotorFront);
-        LMB = new VictorSPX(Constants.leftMotorBack);
+        rightFront = new WPI_TalonFX(Constants.RIGHT_FALCON_FRONT);
+        rightBack = new WPI_TalonFX(Constants.RIGHT_FALCON_BACK);
+        leftFront = new WPI_TalonFX(Constants.LEFT_FALCON_FRONT);
+        leftBack = new WPI_TalonFX(Constants.LEFT_FALCON_BACK);
 
-        motors = Arrays.asList(RMF, RMB, LMF, LMB);
+        List<WPI_TalonFX> motors = Arrays.asList(rightBack, rightFront, leftBack, leftFront);
 
-        for (VictorSPX motor : motors) {
+        for(WPI_TalonFX motor : motors) {
             motor.configFactoryDefault();
+
+            motor.configNeutralDeadband(0.001);
+
+            /* Config sensor used for Primary PID [Velocity] */
+
+            motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.kPIDLoopIdx,
+                    Constants.kTimeoutMs);
+
+            /* Config the peak and nominal outputs */
+            motor.configNominalOutputForward(0, Constants.kTimeoutMs);
+            motor.configNominalOutputReverse(0, Constants.kTimeoutMs);
+            motor.configPeakOutputForward(1, Constants.kTimeoutMs);
+            motor.configPeakOutputReverse(-1, Constants.kTimeoutMs);
+
+            /* Config the Velocity closed loop gains in slot0 */
+            motor.config_kF(Constants.kPIDLoopIdx, Constants.kF, Constants.kTimeoutMs);
+            motor.config_kP(Constants.kPIDLoopIdx, Constants.kP, Constants.kTimeoutMs);
+            motor.config_kI(Constants.kPIDLoopIdx, Constants.kI, Constants.kTimeoutMs);
+            motor.config_kD(Constants.kPIDLoopIdx, Constants.kD, Constants.kTimeoutMs);
+
+            // Might interfere with PID
+
             motor.setNeutralMode(NeutralMode.Brake);
         }
 
-        RMF.setInverted(true);
-        RMB.setInverted(true);
-
-        setDefaultCommand(new TankDrive(this));
-    }
-
-    public void setValues(double m1, double m2, double m3, double m4) {
-        RMB.set(VictorSPXControlMode.PercentOutput, m1);
-        RMF.set(VictorSPXControlMode.PercentOutput, m2);
-        LMB.set(VictorSPXControlMode.PercentOutput, m3);
-        LMF.set(VictorSPXControlMode.PercentOutput, m4);
+        leftFront.setInverted(true);
+        leftBack.setInverted(true);
     }
 }
-// I wanted to be a contributor lol -tanmay
