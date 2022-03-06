@@ -62,7 +62,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     button.toggleWhenPressed(new RotateToBall(driveBase, table.getEntry("opencv")));
     ballButton.whenHeld(new TurnToAngle(new Translation2d(1,1), driveBase.getPose(), driveBase));
-    gyroCallibrate.toggleWhenPressed(new StartEndCommand(gyro::recal, () -> System.out.print(""), gyro));//lamda for requireNonNull
+    gyroCallibrate.whileActiveOnce(new StartEndCommand(gyro::recal, () -> {}, gyro));
   }
 
   /**

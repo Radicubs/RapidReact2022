@@ -4,7 +4,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DifferentialDriveBase;
-import frc.robot.subsystems.DriveBase;
 
 import java.util.Arrays;
 

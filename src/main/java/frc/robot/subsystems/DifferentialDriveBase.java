@@ -1,27 +1,15 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.MecanumDriveCommand;
 import frc.robot.commands.TankDrive;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class DifferentialDriveBase extends DriveBase {
     /** Creates a new ExampleSubsystem. */
@@ -61,8 +49,6 @@ public class DifferentialDriveBase extends DriveBase {
 
     public void periodic() {
         differentialDriveOdometry.update(RobotContainer.gyro.getRotation2d(), getLeftEncoderDistance(), getRightEncoderDistance());
-        // System.out.println("Right distance travelled: " + getRightEncoderDistance());
-        // System.out.println("Left distance travelled: " + getLeftEncoderDistance());
     }
 
     public SimpleMotorFeedforward getFeedforward() {

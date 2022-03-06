@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.MecanumDriveCommand;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,5 +54,7 @@ public abstract class DriveBase extends SubsystemBase {
 
         leftFront.setInverted(true);
         leftBack.setInverted(true);
+
+        setDefaultCommand(new MecanumDriveCommand((MecanumDriveBase) this));
     }
 }
