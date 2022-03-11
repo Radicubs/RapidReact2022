@@ -22,8 +22,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.RotateToBall;
 import frc.robot.commands.TurnToAngle;
-import frc.robot.subsystems.DifferentialDriveBase;
-import frc.robot.subsystems.Gyro;
+import frc.robot.subsystems.*;
 
 import java.util.List;
 
@@ -37,15 +36,19 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   //private final DriveBase driveBase = new DriveBase();
-  private final DifferentialDriveBase driveBase = new DifferentialDriveBase();
+  //private final DifferentialDriveBase driveBase = new DifferentialDriveBase();
+
 
   public static final Gyro gyro = new Gyro();
   public final NetworkTable table;
-  private final JoystickButton ballButton = new JoystickButton(controller, Constants.A_BUTTON);
   private final JoystickButton gyroCallibrate = new JoystickButton(controller, Constants.L_BUMP);
 
+  public final Elevator elevator = new Elevator();
+  public final Shooter shooter = new Shooter();
+  public final Index index = new Index();
+  public final Intake intake = new Intake();
+
   public static Joystick controller = new Joystick(Constants.JOYSTICK);
-  private static final JoystickButton button = new JoystickButton(controller, Constants.A_BUTTON);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
@@ -60,8 +63,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    button.toggleWhenPressed(new RotateToBall(driveBase, table.getEntry("opencv")));
-    ballButton.whenHeld(new TurnToAngle(new Translation2d(1,1), driveBase.getPose(), driveBase));
+    new JoystickButton(controller, Constants.A_BUTTON).toggleWhenPressed(new StartEndCommand(intake::on, intake::off, intake));
+    new JoystickButton(controller, Constants.B_BUTTON).toggleWhenPressed(new StartEndCommand(index::on, index::off, index));
+    new JoystickButton(controller, Constants.X_BUTTON).toggleWhenPressed(new StartEndCommand(elevator::on, elevator::off, elevator));
+    new JoystickButton(controller, Constants.Y_BUTTON).toggleWhenPressed(new StartEndCommand(shooter::on, shooter::off, shooter));
+
     gyroCallibrate.whileActiveOnce(new StartEndCommand(gyro::recal, () -> {}, gyro));
   }
 
@@ -71,26 +77,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(1, 1);
-    config.setKinematics(Constants.kDriveKinematics);
-
-    Trajectory t = TrajectoryGenerator.generateTrajectory(new Pose2d(), List.of(new Translation2d(1, 0), new Translation2d(1, 1)),
-            new Pose2d(2, 0, new Rotation2d(0)), config);
-
-    RamseteCommand ramseteCommand = new RamseteCommand(t,
-            driveBase::getPose,
-            new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
-            driveBase.getFeedforward(),
-            Constants.kDriveKinematics,
-            driveBase::getWheelSpeeds,
-            driveBase.getLeftPID(),
-            driveBase.getRightPID(),
-            driveBase::tankDriveVolts,
-            driveBase);
-
-    driveBase.resetOdometry(t.getInitialPose());
-    return ramseteCommand.andThen(() -> driveBase.tankDriveVolts(0, 0));
+    return null;
   }
 }

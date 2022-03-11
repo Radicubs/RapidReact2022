@@ -58,12 +58,22 @@ public final class Constants {
     public static final int RIGHT_X_AXIS = 4;
     public static final int RIGHT_Y_AXIS = 5;
     public static final int A_BUTTON = 1;
+    public static final int B_BUTTON = 2;
+    public static final int X_BUTTON = 3;
+    public static final int Y_BUTTON = 4;
     public static final int L_BUMP = 5;
 
-    public static final int RIGHT_FALCON_FRONT = 1;
-    public static final int RIGHT_FALCON_BACK = 2;
-    public static final int LEFT_FALCON_FRONT = 3;
-    public static final int LEFT_FALCON_BACK = 0;
+    public static final int LEFT_FALCON_FRONT = 1;
+    public static final int RIGHT_FALCON_FRONT = 2;
+    public static final int RIGHT_FALCON_BACK = 3;
+    public static final int LEFT_FALCON_BACK = 4;
+    public static final int SHOOTER_TOP = 5;
+    public static final int SHOOTER_BOTTOM = 6;
+    public static final int INTAKE_MOTOR = 7;
+    public static final int CLIMBER_LEFT = 8;
+    public static final int CLIMBER_RIGHT = 9;
+    public static final int INDEX_MOTOR = 10;
+    public static final int ELEVATOR_MOTOR = 11;
 
     public static final int LEFT_TRIGGER = 2;
 
