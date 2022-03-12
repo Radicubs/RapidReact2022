@@ -26,7 +26,7 @@ public class Shooter extends SubsystemBase {
         bottom.set(TalonFXControlMode.PercentOutput, motorSpeed);
     }
 
-    public void on() {motorSpeed = 0.75;}
+    public void on() {motorSpeed = 0.8;}
 
     public void off() {motorSpeed = 0;}
 }

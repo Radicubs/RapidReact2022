@@ -3,13 +3,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.DifferentialDriveBase;
+import frc.robot.subsystems.DriveBase;
 
 public class TankDrive extends CommandBase {
 
-    private final DifferentialDriveBase driveBase;
+    private final DriveBase driveBase;
 
-    public TankDrive(DifferentialDriveBase driveBase) {
+    public TankDrive(DriveBase driveBase) {
         this.driveBase = driveBase;
         addRequirements(driveBase);
     }
@@ -23,7 +23,7 @@ public class TankDrive extends CommandBase {
         if(Math.abs(left) < 0.01) left = 0;
         if(Math.abs(right) < 0.01) right = 0;
 
-        driveBase.setValues(right, left);
+        driveBase.setValues(left, right, left, right);
     }
 
     public void end(boolean interrupted) {}

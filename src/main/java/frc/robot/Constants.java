@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -86,4 +88,13 @@ public final class Constants {
     public static double kTurnRateToleranceDegPerS = 1;
 
     public static final int MaxCV = 1000;
+
+    //For drive base odometry
+    private static final double tenInch = Units.inchesToMeters(10);
+    private static final double ellInch = Units.inchesToMeters(11);
+    public static final Translation2d frontLeft = new Translation2d(tenInch, ellInch);
+    public static final Translation2d frontRight = new Translation2d(-tenInch, ellInch);
+    public static final Translation2d backLeft = new Translation2d(tenInch, -ellInch);
+    public static final Translation2d backRight = new Translation2d(-tenInch, -ellInch);
+    public static final double wheelDiameter = Math.PI * 6;
 }
