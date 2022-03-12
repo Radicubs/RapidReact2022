@@ -4,41 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.RotateToBall;
-import frc.robot.commands.TurnToAngle;
 import frc.robot.subsystems.*;
 
-import java.util.List;
-
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-
-  //private final DriveBase driveBase = new DriveBase();
-  //private final DifferentialDriveBase driveBase = new DifferentialDriveBase();
-
-
   public static final Gyro gyro = new Gyro();
   public final NetworkTable table;
   private final JoystickButton gyroCallibrate = new JoystickButton(controller, Constants.L_BUMP);
@@ -47,6 +23,7 @@ public class RobotContainer {
   public final Shooter shooter = new Shooter();
   public final Index index = new Index();
   public final Intake intake = new Intake();
+  public final Climber climber = new Climber();
 
   public static Joystick controller = new Joystick(Constants.JOYSTICK);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
