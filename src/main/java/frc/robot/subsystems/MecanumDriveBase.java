@@ -18,7 +18,7 @@ import frc.robot.commands.TankDrive;
 import java.util.Arrays;
 import java.util.List;
 
-public class DriveBase extends SubsystemBase {
+public class MecanumDriveBase extends SubsystemBase {
 
     private final WPI_TalonFX rightFront;
     private final WPI_TalonFX rightBack;
@@ -28,7 +28,7 @@ public class DriveBase extends SubsystemBase {
     private final MecanumDriveOdometry odometry;
 
 
-    public DriveBase() {
+    public MecanumDriveBase() {
         kinematics = new MecanumDriveKinematics(Constants.frontLeft, Constants.frontRight, Constants.backLeft, Constants.backRight);
         odometry = new MecanumDriveOdometry(kinematics, Rotation2d.fromDegrees(0), new Pose2d());//TODO set to actual tarmac vals
 
@@ -69,7 +69,7 @@ public class DriveBase extends SubsystemBase {
         leftFront.setInverted(true);
         leftBack.setInverted(true);
 
-        setDefaultCommand(new TankDrive(this));
+        setDefaultCommand(new MecanumDriveCommand(this));
     }
 
     public void setValues(double m1, double m2, double m3, double m4) {

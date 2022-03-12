@@ -4,15 +4,15 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.MecanumDriveBase;
 
 import static edu.wpi.first.wpilibj.drive.MecanumDrive.driveCartesianIK;
 
 public class MecanumDriveCommand extends CommandBase {
 
-    private final DriveBase driveBase;
+    private final MecanumDriveBase driveBase;
 
-    public MecanumDriveCommand(DriveBase driveBase) {
+    public MecanumDriveCommand(MecanumDriveBase driveBase) {
         this.driveBase = driveBase;
         addRequirements(driveBase);
     }

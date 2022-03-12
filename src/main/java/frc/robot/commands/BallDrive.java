@@ -4,14 +4,14 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.DriveBase;
+import frc.robot.subsystems.MecanumDriveBase;
 
 public class BallDrive extends CommandBase {
 
-    private final DriveBase base;
+    private final MecanumDriveBase base;
     private final NetworkTableEntry cam;
 
-    public BallDrive(DriveBase base, NetworkTableEntry cam) {
+    public BallDrive(MecanumDriveBase base, NetworkTableEntry cam) {
         this.base = base;
         this.cam = cam;
         addRequirements(base);
