@@ -13,11 +13,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.BallDown;
+import frc.robot.commands.BallDrive;
+import frc.robot.commands.BeginPickup;
 import frc.robot.commands.RotateToBall;
+import frc.robot.commands.auto.ChaseBall;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
   public static final Gyro gyro = new Gyro();
+  public static final ColorSensor color = new ColorSensor();
   public final NetworkTable table;
   private final JoystickButton gyroCallibrate = new JoystickButton(controller, Constants.L_BUMP);
 
@@ -47,7 +52,7 @@ public class RobotContainer {
     new JoystickButton(controller, Constants.B_BUTTON).toggleWhenPressed(new StartEndCommand(index::on, index::off, index));
     new JoystickButton(controller, Constants.X_BUTTON).toggleWhenPressed(new StartEndCommand(elevator::on, elevator::off, elevator));
     new JoystickButton(controller, Constants.Y_BUTTON).toggleWhenPressed(new StartEndCommand(shooter::on, shooter::off, shooter));
-
+    new JoystickButton(controller, Constants.R_BUMP).toggleWhenPressed(new BallDown(elevator, shooter));
     gyroCallibrate.whileActiveOnce(new StartEndCommand(gyro::recal, () -> {}, gyro));
   }
 
@@ -57,6 +62,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return new BeginPickup(intake, index, elevator, shooter);
   }
 }

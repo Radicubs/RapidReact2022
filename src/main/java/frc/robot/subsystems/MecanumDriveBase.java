@@ -72,19 +72,27 @@ public class MecanumDriveBase extends SubsystemBase {
         setDefaultCommand(new MecanumDriveCommand(this));
     }
 
-    public void setValues(double m1, double m2, double m3, double m4) {
-        m1 = m1 * 2000.0 * 2048.0 / 600.0;
-        m2 = m2 * 2000.0 * 2048.0 / 600.0;
-        m3 = m3 * 2000.0 * 2048.0 / 600.0;
-        m4 = m4 * 2000.0 * 2048.0 / 600.0;
+    public void setValues(double rBack, double rFront, double lBack, double lFront) {
+        rBack = rBack * 2000 * 2048.0 / 600.0;
+        rFront = rFront * 2000 * 2048.0 / 600.0;
+        lBack = lBack * 2000 * 2048.0 / 600.0;
+        lFront = lFront * 2000 * 2048.0 / 600.0;
         //2000 = motor free speed (rpm)
         //2048 = encoder ticks per rev
         //600 = 60 * 10 = encoder ticks are measured in 100ms * 10 = seconds * 60 = per minute
 
-        rightBack.set(TalonFXControlMode.Velocity, m1);
-        rightFront.set(TalonFXControlMode.Velocity, m2);
-        leftBack.set(TalonFXControlMode.Velocity, m3);
-        leftFront.set(TalonFXControlMode.Velocity, m4);
+        rightBack.set(TalonFXControlMode.Velocity, rBack);
+        rightFront.set(TalonFXControlMode.Velocity, rFront);
+        leftBack.set(TalonFXControlMode.Velocity, lBack);
+        leftFront.set(TalonFXControlMode.Velocity, lFront);
+    }
+
+    public void setPercent(double lFront, double rFront, double rBack, double lBack) {
+        leftFront.set(TalonFXControlMode.PercentOutput, lFront);
+        rightFront.set(TalonFXControlMode.PercentOutput, rFront);
+        rightBack.set(TalonFXControlMode.PercentOutput, rBack);
+        leftBack.set(TalonFXControlMode.PercentOutput, lBack);
+
     }
 
     @Override

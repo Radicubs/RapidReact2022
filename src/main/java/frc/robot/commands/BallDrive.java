@@ -10,28 +10,32 @@ public class BallDrive extends CommandBase {
 
     private final MecanumDriveBase base;
     private final NetworkTableEntry cam;
+    private boolean isFinished;
+    private final double lowestBallPos = 31000; //TODO
 
     public BallDrive(MecanumDriveBase base, NetworkTableEntry cam) {
         this.base = base;
         this.cam = cam;
         addRequirements(base);
+        isFinished = false;
     }
 
     @Override
     public void execute() {
-        System.out.println("Network value: " + cam.getString(""));
+        String data = cam.getString("");
+        System.out.println("Network value: " + data);
         if(cam.getString("").isEmpty()) {
             System.out.println("Not recieving values from Jetson Nano!!");
             return;
         }
 
-        else if(cam.getString("").equals("nothing")) {
+        else if(data.equals("nothing")) {
             MecanumDrive.WheelSpeeds speeds = MecanumDrive.driveCartesianIK(0, 0, .3333, RobotContainer.gyro.getAngle());
             base.setValues(speeds.rearRight, speeds.frontRight, speeds.rearLeft, speeds.frontLeft);
             return;
         }
 
-        String[] entry = cam.getString("").split(" ");
+        String[] entry = data.split(" ");
         double x = Double.parseDouble(entry[0]);
 
         double error = (640.0 - x);
@@ -50,5 +54,13 @@ public class BallDrive extends CommandBase {
         //else speeds = MecanumDrive.driveCartesianIK(0.333, 0, (x < 680 ? 0.333 : -0.333), RobotContainer.gyro.getAngle());
 
         base.setValues(speeds.rearRight, speeds.frontRight, speeds.rearLeft, speeds.frontLeft);
+
+        isFinished = Double.parseDouble(entry[1]) > lowestBallPos;
     }
+
+    @Override
+    public boolean isFinished() {return isFinished;}
+
+    @Override
+    public void end(boolean interrupted) {base.setValues(0, 0, 0, 0);}
 }

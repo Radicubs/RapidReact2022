@@ -28,5 +28,10 @@ public class Shooter extends SubsystemBase {
 
     public void on() {motorSpeed = 0.8;}
 
+    public void shooterSlowForward() {motorSpeed = 0.1;}
+
+    public void shooterSlowBackward() {motorSpeed = -0.1;}
+
     public void off() {motorSpeed = 0;}
+
 }

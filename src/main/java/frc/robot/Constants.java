@@ -64,8 +64,11 @@ public final class Constants {
     public static final int X_BUTTON = 3;
     public static final int Y_BUTTON = 4;
     public static final int L_BUMP = 5;
+    public static final int R_BUMP = 6;
     public static final int LT_AXIS = 2;
     public static final int RT_AXIS = 3;
+    public static final int CLICK_LEFT_JOYSTICK = 9;
+    public static final int CLICK_RIGHT_JOYSTICK = 10;
 
     public static final int LEFT_FALCON_FRONT = 1;
     public static final int RIGHT_FALCON_FRONT = 2;

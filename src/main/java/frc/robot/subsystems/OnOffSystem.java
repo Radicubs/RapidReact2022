@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public abstract class OnOffSystem extends SubsystemBase {
 
     private final CANSparkMax motor;
-    private double motorSpeed;
+    protected double motorSpeed;
     private final double highSpeed;
 
     public OnOffSystem(final int id, final double highSpeed) {
