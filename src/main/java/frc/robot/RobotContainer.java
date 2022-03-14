@@ -11,13 +11,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.BallDown;
-import frc.robot.commands.BallDrive;
-import frc.robot.commands.BeginPickup;
-import frc.robot.commands.RotateToBall;
-import frc.robot.commands.auto.ChaseBall;
+import frc.robot.commands.Pickup;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -52,7 +48,7 @@ public class RobotContainer {
     new JoystickButton(controller, Constants.B_BUTTON).toggleWhenPressed(new StartEndCommand(index::on, index::off, index));
     new JoystickButton(controller, Constants.X_BUTTON).toggleWhenPressed(new StartEndCommand(elevator::on, elevator::off, elevator));
     new JoystickButton(controller, Constants.Y_BUTTON).toggleWhenPressed(new StartEndCommand(shooter::on, shooter::off, shooter));
-    new JoystickButton(controller, Constants.R_BUMP).toggleWhenPressed(new BallDown(elevator, shooter));
+    new JoystickButton(controller, Constants.R_BUMP).toggleWhenPressed(new BallDown(elevator, shooter, index, intake));
     gyroCallibrate.whileActiveOnce(new StartEndCommand(gyro::recal, () -> {}, gyro));
   }
 
@@ -62,6 +58,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new BeginPickup(intake, index, elevator, shooter);
+    return new Pickup(driveBase, intake, index, elevator, shooter);
   }
 }

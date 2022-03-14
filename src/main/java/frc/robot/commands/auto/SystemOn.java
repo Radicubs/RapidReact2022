@@ -1,13 +1,13 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.OnOffSystem;
+import frc.robot.subsystems.StartableSystem;
 
 public class SystemOn extends CommandBase {
 
-    private final OnOffSystem system;
+    private final StartableSystem system;
 
-    public SystemOn(OnOffSystem system) {
+    public SystemOn(StartableSystem system) {
         this.system = system;
     }
 

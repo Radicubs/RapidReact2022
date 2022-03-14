@@ -1,28 +1,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Index;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.*;
 
-public class BeginPickup extends CommandBase {
+public class Pickup extends CommandBase {
 
     private final Intake intake;
     private final Index index;
     private final Elevator elevator;
     private final Shooter shooter;
-    private boolean isFinished;
+    private boolean interrupt;
     private int counter;
     private boolean seenRed;
+    private final MecanumDriveBase base;
 
-    public BeginPickup(Intake intake, Index index, Elevator elevator, Shooter shooter) {
+    public Pickup(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter) {
         this.index = index;
         this.intake = intake;
         this.elevator = elevator;
         this.shooter = shooter;
+        interrupt = false;
+        this.base = base;
     }
 
     @Override
@@ -30,6 +29,7 @@ public class BeginPickup extends CommandBase {
         intake.on();
         index.on();
         elevator.on();
+        base.setPercent(0.1, 0.1, -0.1, -0.1);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class BeginPickup extends CommandBase {
         //    System.out.println("NONE");
         //    return;
         //}
-        RobotContainer.color.getDiagnostics();
+
         if(RobotContainer.color.isRed()) {
             System.out.println("RED");
             shooter.shooterSlowForward();
@@ -47,6 +47,7 @@ public class BeginPickup extends CommandBase {
 
         else if(RobotContainer.color.isBlue()) {
             elevator.off();
+            interrupt = true;
         }
 
         if (seenRed) {
@@ -55,7 +56,7 @@ public class BeginPickup extends CommandBase {
     }
 
     @Override
-    public boolean isFinished() {return counter == 100;} // needs to be optimized (lowered)
+    public boolean isFinished() {return counter == 100 || interrupt;} // needs to be optimized (lowered)
 
     @Override
     public void end(boolean interrupted) {

@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public abstract class OnOffSystem extends SubsystemBase {
+public abstract class OnOffSystem extends SubsystemBase implements StartableSystem {
 
     private final CANSparkMax motor;
     protected double motorSpeed;
@@ -22,4 +22,6 @@ public abstract class OnOffSystem extends SubsystemBase {
     public void on() {motorSpeed = highSpeed;}
 
     public void off() {motorSpeed = 0;}
+
+    public void backwards() {motorSpeed = -highSpeed;}
 }

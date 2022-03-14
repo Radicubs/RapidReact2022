@@ -6,6 +6,8 @@ import frc.robot.commands.BallDrive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.MecanumDriveBase;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class ChaseBall extends SequentialCommandGroup {
 
     public ChaseBall(MecanumDriveBase base, Intake intake) {
@@ -13,6 +15,6 @@ public class ChaseBall extends SequentialCommandGroup {
 
         addCommands(new BallDrive(base, NetworkTableInstance.getDefault().getTable("data").getEntry("0")),
                 new SystemOn(intake),
-                new DriveIndefintately(base));
+                new Drive(base, new AtomicBoolean(false), 0.1));
     }
 }
