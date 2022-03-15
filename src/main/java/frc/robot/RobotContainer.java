@@ -12,13 +12,20 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.auto.groups.*;
 import frc.robot.commands.BallDown;
+
 import frc.robot.commands.Pickup;
+import frc.robot.commands.auto.LimelightAlign;
+import frc.robot.commands.auto.groups.GrabAndShoot;
 import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.I2C;
 
 public class RobotContainer {
   public static final Gyro gyro = new Gyro();
-  public static final ColorSensor color = new ColorSensor();
+  public static final ColorSensor elevatorColor = new ColorSensor(I2C.Port.kOnboard);
+  public static final ColorSensor indexColor = new ColorSensor(I2C.Port.kMXP);
+
   public final NetworkTable table;
   private final JoystickButton gyroCallibrate = new JoystickButton(controller, Constants.L_BUMP);
 
@@ -58,6 +65,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new Pickup(driveBase, intake, index, elevator, shooter);
+    // return new LimelightAlign(driveBase);
+     // return new Pickup(driveBase, intake, index, elevator, shooter);
+     return new GrabAndShoot(driveBase, intake, index, elevator, shooter, true);
   }
 }

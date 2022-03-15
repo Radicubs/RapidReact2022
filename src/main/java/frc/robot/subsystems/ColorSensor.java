@@ -11,8 +11,8 @@ public class ColorSensor extends SubsystemBase {
     private final int blueThreshold = 10000;
     private final ColorSensorV3 color;
 
-    public ColorSensor() {
-        color = new ColorSensorV3(I2C.Port.kOnboard);
+    public ColorSensor(I2C.Port port) {
+        color = new ColorSensorV3(port);
     }
 
     public Color getColor() {
@@ -21,7 +21,7 @@ public class ColorSensor extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // System.out.println("COLOR: " + color.getRed() + " " + color.getGreen() + " " + color.getBlue());
+        System.out.println("COLOR: " + color.getRed() + " " + color.getGreen() + " " + color.getBlue());
     }
 
     public boolean isRed() {return (((double) color.getRed()) / color.getBlue() > 1.5);}

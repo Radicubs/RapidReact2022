@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class P1SB extends SequentialCommandGroup {
 
     public P1SB(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter) {
-        addCommands(new GrabAndShoot(base, intake, index, elevator, shooter),
+        addCommands(new GrabAndShoot(base, intake, index, elevator, shooter, true),
                 new Rotate(base, 90),
                 new Drive(base, new AtomicBoolean(false), 0.2).withTimeout(1),
-                new GrabAndShoot(base, intake, index, elevator, shooter));
+                new GrabAndShoot(base, intake, index, elevator, shooter, true));
     }
 }

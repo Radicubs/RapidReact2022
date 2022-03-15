@@ -63,7 +63,8 @@ public class MecanumDriveBase extends SubsystemBase {
 
             // Might interfere with PID
 
-            motor.setNeutralMode(NeutralMode.Brake);
+            //motor.setNeutralMode(NeutralMode.Brake);
+            motor.setNeutralMode(NeutralMode.Coast);
         }
 
         leftFront.setInverted(true);
@@ -98,11 +99,13 @@ public class MecanumDriveBase extends SubsystemBase {
     @Override
     public void periodic() {
         MecanumDriveWheelSpeeds speeds = new MecanumDriveWheelSpeeds(
-                leftFront.getSelectedSensorVelocity() * 10 / 2048 * 6380,
-                rightFront.getSelectedSensorVelocity() * 10 / 2048 * 6380,
-                leftBack.getSelectedSensorVelocity() * 10 / 2048 * 6380,
-                rightBack.getSelectedSensorVelocity() * 10 / 2048 * 6380);
+                leftFront.getSelectedSensorVelocity() * 10 / (2048 * 6380),
+                rightFront.getSelectedSensorVelocity() * 10 / (2048 * 6380),
+                leftBack.getSelectedSensorVelocity() * 10 / (2048 * 6380),
+                rightBack.getSelectedSensorVelocity() * 10 / (2048 * 6380));
 
         odometry.update(Rotation2d.fromDegrees(RobotContainer.gyro.getAngle()), speeds);
+
+        System.out.println(odometry.getPoseMeters().toString());
     }
 }

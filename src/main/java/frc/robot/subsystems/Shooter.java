@@ -14,15 +14,15 @@ import java.util.List;
 
 public class Shooter extends SubsystemBase implements StartableSystem {
 
-    private final WPI_TalonFX top;
-    private final WPI_TalonFX bottom;
+    public final WPI_TalonFX top;
+    public final WPI_TalonFX bottom;
     private double motorSpeed;
     // private final MecanumDriveOdometry odometry;
     // private final MecanumDriveKinematics kinematics;
 
-    private final double kP = 0.117;
-    private final double kI = 0;
-    private final double kD = 0;
+    private final double kP = 0.23;
+    private final double kI = 0.004;
+    private final double kD = 0.8;
 
     public Shooter() {
         top = new WPI_TalonFX(Constants.SHOOTER_TOP);
@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase implements StartableSystem {
 
         bottom.setInverted(true);
         top.setSensorPhase(false);
-        bottom.follow(top);
+
         top.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
         bottom.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 0);
 
@@ -48,28 +48,28 @@ public class Shooter extends SubsystemBase implements StartableSystem {
         bottom.configNominalOutputReverse(0, Constants.kTimeoutMs);
         bottom.configPeakOutputForward(1, Constants.kTimeoutMs);
         bottom.configPeakOutputReverse(-1, Constants.kTimeoutMs);
-        double val = 0.28;
-        top.config_kP(Constants.kPIDLoopIdx, val, Constants.kTimeoutMs);
+                
+        top.config_kP(Constants.kPIDLoopIdx, kP, Constants.kTimeoutMs);
         top.config_kF(Constants.kPIDLoopIdx, 0, Constants.kTimeoutMs);
 
-        top.config_kD(Constants.kPIDLoopIdx, 0, Constants.kTimeoutMs); // start with small kp, then double until
+        top.config_kD(Constants.kPIDLoopIdx, kD, Constants.kTimeoutMs); // start with small kp, then double until
                                                                        // oscillations, then increase d
         top.config_kI(Constants.kPIDLoopIdx, 0, Constants.kTimeoutMs);
 
-        bottom.config_kP(Constants.kPIDLoopIdx, val, Constants.kTimeoutMs);
+        bottom.config_kP(Constants.kPIDLoopIdx, kP, Constants.kTimeoutMs);
         bottom.config_kF(Constants.kPIDLoopIdx, 0, Constants.kTimeoutMs);
 
-        bottom.config_kD(Constants.kPIDLoopIdx, 0, Constants.kTimeoutMs);
+        bottom.config_kD(Constants.kPIDLoopIdx, kD, Constants.kTimeoutMs);
         top.config_kI(Constants.kPIDLoopIdx, 0, Constants.kTimeoutMs);
 
-        top.setNeutralMode(NeutralMode.Brake);
-        bottom.setNeutralMode(NeutralMode.Brake);
+        top.setNeutralMode(NeutralMode.Coast);
+        bottom.setNeutralMode(NeutralMode.Coast);
 
     }
 
     @Override
     public void periodic() {
-        double speed = motorSpeed * 2000.0 * 2048.0 / 600.0;
+        double speed = motorSpeed * 6380 * 2048.0 / 600.0;
         top.set(TalonFXControlMode.Velocity, speed);
         bottom.set(TalonFXControlMode.Velocity, speed);
 
@@ -78,7 +78,7 @@ public class Shooter extends SubsystemBase implements StartableSystem {
     }
 
     @Override
-    public void on() {motorSpeed = 0.5;}
+    public void on() {motorSpeed = 0.35;}
 
     public void shooterSlowForward() {motorSpeed = 0.1;}
 

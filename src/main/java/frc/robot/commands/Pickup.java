@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.w3c.dom.css.ElementCSSInlineStyle;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
@@ -12,16 +14,29 @@ public class Pickup extends CommandBase {
     private final Shooter shooter;
     private boolean interrupt;
     private int counter;
-    private boolean seenRed;
+    private boolean seenColor;
     private final MecanumDriveBase base;
+    private final boolean ballPreloaded;
+    private final ColorSensor colorSensor;
+    private boolean isDone = false;
 
-    public Pickup(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter) {
+    public Pickup(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter, boolean ballPreloaded) {
+        
+        addRequirements(base, intake, index, elevator, shooter);
+
         this.index = index;
         this.intake = intake;
         this.elevator = elevator;
         this.shooter = shooter;
         interrupt = false;
         this.base = base;
+        this.ballPreloaded = ballPreloaded;
+
+        if (ballPreloaded) {
+            colorSensor = RobotContainer.indexColor;
+        } else {
+            colorSensor = RobotContainer.elevatorColor;
+        }
     }
 
     @Override
@@ -29,8 +44,9 @@ public class Pickup extends CommandBase {
         intake.on();
         index.on();
         elevator.on();
-        base.setPercent(0.1, 0.1, -0.1, -0.1);
+        base.setPercent(-0.25, -0.25, -0.25, -0.25);
     }
+
 
     @Override
     public void execute() {
@@ -39,13 +55,24 @@ public class Pickup extends CommandBase {
         //    return;
         //}
 
-        if(RobotContainer.color.isRed()) {
+        if (colorSensor.isRed() || colorSensor.isBlue()) {
+            shooter.shooterSlowForward();
+            colorSensor.getDiagnostics();
+            seenColor = true;
+            isDone = true;
+        }
+
+        /*
+        if (seenColor) {
+            counter += 1;
+        }
+        if(colorSensor.isRed()) {
             System.out.println("RED");
             shooter.shooterSlowForward();
             seenRed = true;
         }
 
-        else if(RobotContainer.color.isBlue()) {
+        else if(colorSensor.isBlue()) {
             elevator.off();
             interrupt = true;
         }
@@ -53,10 +80,14 @@ public class Pickup extends CommandBase {
         if (seenRed) {
             counter += 1;
         }
+        */
     }
 
     @Override
-    public boolean isFinished() {return counter == 100 || interrupt;} // needs to be optimized (lowered)
+    public boolean isFinished() {
+        // return counter == 100 || interrupt;
+        return isDone;
+    } // needs to be optimized (lowered)
 
     @Override
     public void end(boolean interrupted) {
