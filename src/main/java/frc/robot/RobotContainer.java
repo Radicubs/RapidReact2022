@@ -36,6 +36,8 @@ public class RobotContainer {
   public final Climber climber = new Climber();
   public final MecanumDriveBase driveBase = new MecanumDriveBase();
 
+  public static final UltrasonicSensor ultrasonic = new UltrasonicSensor();
+
   public static Joystick controller = new Joystick(Constants.JOYSTICK);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

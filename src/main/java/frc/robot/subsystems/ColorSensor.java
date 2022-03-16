@@ -21,7 +21,7 @@ public class ColorSensor extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("COLOR: " + color.getRed() + " " + color.getGreen() + " " + color.getBlue());
+        // System.out.println("COLOR: " + color.getRed() + " " + color.getGreen() + " " + color.getBlue());
     }
 
     public boolean isRed() {return (((double) color.getRed()) / color.getBlue() > 1.5);}

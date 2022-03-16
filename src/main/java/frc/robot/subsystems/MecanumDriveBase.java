@@ -106,6 +106,5 @@ public class MecanumDriveBase extends SubsystemBase {
 
         odometry.update(Rotation2d.fromDegrees(RobotContainer.gyro.getAngle()), speeds);
 
-        System.out.println(odometry.getPoseMeters().toString());
     }
 }
