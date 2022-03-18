@@ -1,7 +1,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DifferentialDriveBase;
 
@@ -20,8 +22,6 @@ public class RotateToBall extends CommandBase {
 
         addRequirements(drive);
     }
-
-
 
     @Override
     public void execute() {
@@ -51,7 +51,7 @@ public class RotateToBall extends CommandBase {
 
         if (x == -1 || x == 0) {
             previous /= 2;
-            drive.setValues(previous, previous);
+            drive.setValues(previous, previous, previous, previous);
             return;
         }
 
@@ -74,7 +74,7 @@ public class RotateToBall extends CommandBase {
 
         double turn = ((x - Constants.MaxCV / 2) / 750);
         previous = turn;
-        drive.setValues(-turn, turn);
+        drive.setValues(-turn, turn, -turn, turn);
     }
 
     @Override

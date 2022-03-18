@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.DifferentialDriveBase;
+import frc.robot.subsystems.MecanumDriveBase;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,6 +33,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     PortForwarder.add(8888, "10.75.3.69", 22);
+    CameraServer.startAutomaticCapture();
+    CameraServer.putVideo("WebcamStream", 640, 480);
 
   }
 

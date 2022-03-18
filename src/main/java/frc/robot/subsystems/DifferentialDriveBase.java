@@ -1,19 +1,35 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.commands.MecanumDriveCommand;
 import frc.robot.commands.TankDrive;
 
-public class DifferentialDriveBase extends DriveBase {
+import java.util.Arrays;
+import java.util.List;
+
+public class DifferentialDriveBase extends SubsystemBase {
     /** Creates a new ExampleSubsystem. */
 
+    private WPI_TalonFX rightFront;
+    private WPI_TalonFX rightBack;
+    private WPI_TalonFX leftFront;
+    private WPI_TalonFX leftBack;
     SpeedControllerGroup leftMotors, rightMotors;
     
     private DifferentialDrive differentialDrive;
@@ -26,7 +42,37 @@ public class DifferentialDriveBase extends DriveBase {
     private PIDController right;
 
     public DifferentialDriveBase() {
-       super();
+        rightFront = new WPI_TalonFX(Constants.RIGHT_FALCON_FRONT);
+        rightBack = new WPI_TalonFX(Constants.RIGHT_FALCON_BACK);
+        leftFront = new WPI_TalonFX(Constants.LEFT_FALCON_FRONT);
+        leftBack = new WPI_TalonFX(Constants.LEFT_FALCON_BACK);
+
+        List<WPI_TalonFX> motors = Arrays.asList(rightBack, rightFront, leftBack, leftFront);
+
+        for(WPI_TalonFX motor : motors) {
+            motor.configFactoryDefault();
+
+            motor.configNeutralDeadband(0.001);
+
+            /* Config sensor used for Primary PID [Velocity] */
+            motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.kPIDLoopIdx,
+                    Constants.kTimeoutMs);
+
+            /* Config the peak and nominal outputs */
+            motor.configNominalOutputForward(0, Constants.kTimeoutMs);
+            motor.configNominalOutputReverse(0, Constants.kTimeoutMs);
+            motor.configPeakOutputForward(1, Constants.kTimeoutMs);
+            motor.configPeakOutputReverse(-1, Constants.kTimeoutMs);
+
+            motor.setNeutralMode(NeutralMode.Brake);
+        }
+
+        leftMotors = new SpeedControllerGroup(leftFront, leftBack);
+        rightMotors = new SpeedControllerGroup(rightFront, rightBack);
+
+        differentialDrive = new DifferentialDrive(leftMotors, rightMotors);
+        leftFront.setInverted(true);
+        leftBack.setInverted(true);
 
         differentialDriveOdometry = new DifferentialDriveOdometry(RobotContainer.gyro.getRotation2d());
 
@@ -49,6 +95,8 @@ public class DifferentialDriveBase extends DriveBase {
 
     public void periodic() {
         differentialDriveOdometry.update(RobotContainer.gyro.getRotation2d(), getLeftEncoderDistance(), getRightEncoderDistance());
+        // System.out.println("Right distance travelled: " + getRightEncoderDistance());
+        // System.out.println("Left distance travelled: " + getLeftEncoderDistance());
     }
 
     public SimpleMotorFeedforward getFeedforward() {
@@ -102,12 +150,20 @@ public class DifferentialDriveBase extends DriveBase {
         differentialDrive.feed();
     }
 
+    public double getAverageEncoderDistance() {
+        return (getLeftEncoderDistance() + getRightEncoderDistance()) / 2.0;
+    }
+
+    public void setMaxOutput(double maxOutput) {
+        differentialDrive.setMaxOutput(maxOutput);
+    }
+
     public double getHeading() {
         return RobotContainer.gyro.getRotation2d().getDegrees();
     }
 
-    public void setValues(double m1, double m2) {
-        differentialDrive.tankDrive(m1, m2);
+    public void setValues(double m1, double m2, double m3, double m4) {
+        differentialDrive.tankDrive(m1, m3);
         differentialDrive.feed();
     }
 
