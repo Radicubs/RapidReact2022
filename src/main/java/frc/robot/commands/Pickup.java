@@ -50,8 +50,8 @@ public class Pickup extends CommandBase {
         //}
 
         if (RobotContainer.elevatorColor.isRed() || RobotContainer.elevatorColor.isBlue()) {
-            shooter.shooterSlowForward();
-            RobotContainer.elevatorColor.getDiagnostics();
+            shooter.on();
+            // RobotContainer.elevatorColor.getDiagnostics();
             seenColor = true;
             isDone = true;
         }

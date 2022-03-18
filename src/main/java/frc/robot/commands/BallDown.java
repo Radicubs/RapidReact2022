@@ -23,7 +23,7 @@ public class BallDown extends CommandBase {
 
     @Override
     public void initialize() {
-        elevator.set(0.35);
+        elevator.set(0.45);
         shooter.backwards();
         index.backwards();
         intake.backwards();
