@@ -10,11 +10,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChaseBall extends SequentialCommandGroup {
 
-    public ChaseBall(MecanumDriveBase base, Intake intake) {
+    public ChaseBall(MecanumDriveBase base, Intake intake, double rotDir) {
         addRequirements(base, intake);
 
-        addCommands(new BallDrive(base, NetworkTableInstance.getDefault().getTable("data").getEntry("0")),
+        addCommands(new BallDrive(base, NetworkTableInstance.getDefault().getTable("data").getEntry("0"), rotDir),
                 new SystemOn(intake),
-                new Drive(base, new AtomicBoolean(false), 0.1));
+                new Drive(base, 0.1));
     }
 }

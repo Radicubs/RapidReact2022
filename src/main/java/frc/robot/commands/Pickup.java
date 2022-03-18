@@ -17,7 +17,6 @@ public class Pickup extends CommandBase {
     private boolean seenColor;
     private final MecanumDriveBase base;
     private final boolean ballPreloaded;
-    private final ColorSensor colorSensor;
     private boolean isDone = false;
 
     public Pickup(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter, boolean ballPreloaded) {
@@ -32,19 +31,14 @@ public class Pickup extends CommandBase {
         this.base = base;
         this.ballPreloaded = ballPreloaded;
 
-        if (ballPreloaded) {
-            colorSensor = RobotContainer.indexColor;
-        } else {
-            colorSensor = RobotContainer.elevatorColor;
-        }
     }
 
     @Override
     public void initialize() {
         intake.on();
         index.on();
-        elevator.on();
-        base.setPercent(-0.25, -0.25, -0.25, -0.25);
+        elevator.set(-0.35);
+        base.setPercent(-0.1, -0.1, -0.1, -0.1);
     }
 
 
@@ -55,9 +49,9 @@ public class Pickup extends CommandBase {
         //    return;
         //}
 
-        if (colorSensor.isRed() || colorSensor.isBlue()) {
+        if (RobotContainer.elevatorColor.isRed() || RobotContainer.elevatorColor.isBlue()) {
             shooter.shooterSlowForward();
-            colorSensor.getDiagnostics();
+            RobotContainer.elevatorColor.getDiagnostics();
             seenColor = true;
             isDone = true;
         }

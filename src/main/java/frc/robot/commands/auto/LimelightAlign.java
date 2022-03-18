@@ -13,12 +13,19 @@ public class LimelightAlign extends CommandBase {
     private final MecanumDriveBase drive;
     private final NetworkTable table;
     private boolean isDone;
+    private boolean isAuto;
+    private final int limelightThreshold = 2;
 
     public LimelightAlign(MecanumDriveBase drive) {
+        this(drive, true);
+    }
+
+    public LimelightAlign(MecanumDriveBase drive, boolean isAuto) {
         this.drive = drive;
         addRequirements(drive);
         table = NetworkTableInstance.getDefault().getTable("limelight");
         isDone = false;
+        this.isAuto = isAuto;
     }
 
     @Override
@@ -27,18 +34,27 @@ public class LimelightAlign extends CommandBase {
         double KpAim = -0.1f;
         double KpDistance = -0.1f;
         double min_aim_command = 0.05f;
-        */ 
+        */
+
+        // System.out.println(table.getEntry("tv").getDouble(0));
+        double tv = table.getEntry("tv").getDouble(0);
+        System.out.println(tv);
+        if(tv < 0.5) {
+            if(isAuto) {drive.setPercent(-0.2, -0.2, -0.2, -0.2);}
+            else {drive.setPercent(0.12, -0.12, -0.12, 0.12);}
+            return;
+        }
 
         double tx = table.getEntry("tx").getDouble(0);
         double ty = table.getEntry("ty").getDouble(0);
 
-        isDone = (Math.abs(tx) < 5 && Math.abs(ty) < 5); // limelight threshold
+        isDone = (Math.abs(tx) < limelightThreshold && Math.abs(ty) < limelightThreshold); // limelight threshold
 
-        double zRot = -tx / 25;
-        double forward = -ty / 25;
+        double zRot = -tx / 30;
+        double forward = -ty / 13;
         double sideways = -tx / 100;
 
-        MecanumDrive.WheelSpeeds speeds = driveCartesianIK(applyDeadband(forward, 0.05), applyDeadband(sideways, 0.05), applyDeadband(zRot, 0.05), 0);
+        MecanumDrive.WheelSpeeds speeds = driveCartesianIK(forward, sideways, zRot, 0);
 
         drive.setValues(speeds.rearRight, speeds.frontRight, speeds.rearLeft, speeds.frontLeft);
 

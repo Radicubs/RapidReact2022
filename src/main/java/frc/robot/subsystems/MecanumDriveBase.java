@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -17,6 +18,8 @@ import frc.robot.commands.TankDrive;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static edu.wpi.first.wpilibj.drive.MecanumDrive.driveCartesianIK;
 
 public class MecanumDriveBase extends SubsystemBase {
 
@@ -74,10 +77,10 @@ public class MecanumDriveBase extends SubsystemBase {
     }
 
     public void setValues(double rBack, double rFront, double lBack, double lFront) {
-        rBack = rBack * 2000 * 2048.0 / 600.0;
-        rFront = rFront * 2000 * 2048.0 / 600.0;
-        lBack = lBack * 2000 * 2048.0 / 600.0;
-        lFront = lFront * 2000 * 2048.0 / 600.0;
+        rBack = rBack * 3000 * 2048.0 / 600.0;
+        rFront = rFront * 3000 * 2048.0 / 600.0;
+        lBack = lBack * 3000 * 2048.0 / 600.0;
+        lFront = lFront * 3000 * 2048.0 / 600.0;
         //2000 = motor free speed (rpm)
         //2048 = encoder ticks per rev
         //600 = 60 * 10 = encoder ticks are measured in 100ms * 10 = seconds * 60 = per minute
@@ -86,6 +89,12 @@ public class MecanumDriveBase extends SubsystemBase {
         rightFront.set(TalonFXControlMode.Velocity, rFront);
         leftBack.set(TalonFXControlMode.Velocity, lBack);
         leftFront.set(TalonFXControlMode.Velocity, lFront);
+    }
+
+    public void rotate(double zRot) {
+        MecanumDrive.WheelSpeeds speeds = driveCartesianIK(0, 0, zRot, 0);
+
+        this.setValues(speeds.rearRight, speeds.frontRight, speeds.rearLeft, speeds.frontLeft);
     }
 
     public void setPercent(double lFront, double rFront, double rBack, double lBack) {

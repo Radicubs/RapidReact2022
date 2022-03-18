@@ -36,7 +36,6 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture();
     CameraServer.putVideo("WebcamStream", 640, 480);
 
-
   }
 
   /**

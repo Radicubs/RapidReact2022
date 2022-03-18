@@ -78,7 +78,7 @@ public class Shooter extends SubsystemBase implements StartableSystem {
     }
 
     @Override
-    public void on() {motorSpeed = 0.35;}
+    public void on() {motorSpeed = 0.37;}
 
     public void shooterSlowForward() {motorSpeed = 0.1;}
 

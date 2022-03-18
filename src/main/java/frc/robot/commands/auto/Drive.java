@@ -8,20 +8,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Drive extends CommandBase {//For testing purposes
 
     private final MecanumDriveBase base;
-    private final AtomicBoolean shouldEnd;
     private final double percent;
 
-    public Drive(MecanumDriveBase base, AtomicBoolean shouldEnd, double percent) {
-        this.shouldEnd = shouldEnd;
+    public Drive(MecanumDriveBase base, double percent) {
         this.base = base;
         this.percent = percent;
     }
 
     @Override
     public void execute() {base.setPercent(percent, percent, -percent, -percent);}
-
-    @Override
-    public boolean isFinished() {return shouldEnd.get();}
 
     @Override
     public void end(boolean e) {

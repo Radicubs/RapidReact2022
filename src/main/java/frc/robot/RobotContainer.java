@@ -14,16 +14,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.BallDrive;
 import frc.robot.commands.auto.groups.*;
 import frc.robot.commands.BallDown;
 
-import frc.robot.commands.Pickup;
 import frc.robot.commands.auto.LimelightAlign;
 import frc.robot.commands.auto.groups.GrabAndShoot;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.I2C;
-
-import java.awt.font.GraphicAttribute;
 
 public class RobotContainer {
   public static final Gyro gyro = new Gyro();
@@ -39,20 +37,23 @@ public class RobotContainer {
   public final Intake intake = new Intake();
   public final Climber climber = new Climber();
   public final MecanumDriveBase driveBase = new MecanumDriveBase();
+  public final Winch winch = new Winch();
 
   public static final UltrasonicSensor ultrasonic = new UltrasonicSensor();
 
   private SendableChooser<Command> chooser = new SendableChooser<>();
 
   public static Joystick controller = new Joystick(Constants.JOYSTICK);
+  public static final Joystick buttonBoard = new Joystick(Constants.BUTTON_BOARD);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     table = NetworkTableInstance.getDefault().getTable("data");
     configureButtonBindings();
-    chooser.setDefaultOption("grab and shoot", new GrabAndShoot(driveBase, intake, index, elevator, shooter, true));
-    chooser.addOption("p1sa", new P1SA(driveBase, intake, index, elevator, shooter));
+    chooser.setDefaultOption("Grab and Shoot", new GrabAndShoot(driveBase, intake, index, elevator, shooter, true, 0.333));
+    //chooser.addOption("P1SB", new DualBall(driveBase, intake, index, elevator, shooter));
     SmartDashboard.putData(chooser);
+    SmartDashboard.updateValues();
   }
 
   /**
@@ -67,6 +68,18 @@ public class RobotContainer {
     new JoystickButton(controller, Constants.X_BUTTON).toggleWhenPressed(new StartEndCommand(elevator::on, elevator::off, elevator));
     new JoystickButton(controller, Constants.Y_BUTTON).toggleWhenPressed(new StartEndCommand(shooter::on, shooter::off, shooter));
     new JoystickButton(controller, Constants.R_BUMP).toggleWhenPressed(new BallDown(elevator, shooter, index, intake));
+
+    new JoystickButton(buttonBoard, Constants.TOP_BUTTON_ONE).whenHeld(new LimelightAlign(driveBase, false));
+    new JoystickButton(buttonBoard, Constants.TOP_BUTTON_TWO).whenHeld(new BallDrive(driveBase,
+            NetworkTableInstance.getDefault().getTable("data").getEntry("0"), 0.333));
+    new JoystickButton(buttonBoard, Constants.TOP_BUTTON_THREE);
+    new JoystickButton(buttonBoard, Constants.TOP_BUTTON_FOUR);
+    new JoystickButton(buttonBoard, Constants.BOTTOM_BUTTON_ONE);
+    new JoystickButton(buttonBoard, Constants.BOTTOM_BUTTON_TWO);
+    new JoystickButton(buttonBoard, Constants.BOTTOM_BUTTON_THREE);
+    new JoystickButton(buttonBoard, Constants.BOTTOM_BUTTON_FOUR);
+
+
     gyroCallibrate.whileActiveOnce(new StartEndCommand(gyro::recal, () -> {}, gyro));
   }
 
@@ -78,6 +91,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return new LimelightAlign(driveBase);
      // return new Pickup(driveBase, intake, index, elevator, shooter);
-     return new GrabAndShoot(driveBase, intake, index, elevator, shooter, true);
+     return new LimelightAlign(driveBase);
   }
 }

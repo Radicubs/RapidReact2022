@@ -11,13 +11,16 @@ public class BallDrive extends CommandBase {
     private final MecanumDriveBase base;
     private final NetworkTableEntry cam;
     private boolean isFinished;
-    private final double lowestBallPos = 31000; //TODO
+    private final double lowestBallPos = 295; //TODO
+    private final double rotDir;
+    private final boolean isBlueTeam = true;
 
-    public BallDrive(MecanumDriveBase base, NetworkTableEntry cam) {
+    public BallDrive(MecanumDriveBase base, NetworkTableEntry cam, double rotDir) {
         this.base = base;
         this.cam = cam;
         addRequirements(base);
         isFinished = false;
+        this.rotDir = rotDir;
     }
 
     @Override
@@ -30,15 +33,26 @@ public class BallDrive extends CommandBase {
         }
 
         else if(data.equals("nothing")) {
-            MecanumDrive.WheelSpeeds speeds = MecanumDrive.driveCartesianIK(0, 0, .3333, RobotContainer.gyro.getAngle());
+            MecanumDrive.WheelSpeeds speeds = MecanumDrive.driveCartesianIK(0, 0, rotDir, RobotContainer.gyro.getAngle());
             base.setValues(speeds.rearRight, speeds.frontRight, speeds.rearLeft, speeds.frontLeft);
             return;
         }
 
-        String[] entry = data.split(" ");
+        String[] ananthsDUmb = data.split("  ");
+        String[] entry = null;
+
+        for(String e : ananthsDUmb) {
+            if(e.split(" ")[3].equals(isBlueTeam ? "blue" : "red")) {
+                entry = e.split(" ");
+                break;
+            }
+        }
+
+        if(entry == null) return;
+
         double x = Double.parseDouble(entry[0]);
 
-        double error = (640.0 - x);
+        double error = (360 - x);
         MecanumDrive.WheelSpeeds speeds;
         // 540 to 740
         if (Math.abs(error) > 400) {

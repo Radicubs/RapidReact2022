@@ -55,6 +55,19 @@ public final class Constants {
     public static final int leftMotorBack = 3;
 
     public static final int JOYSTICK = 0;
+    public static final int BUTTON_BOARD = 1;
+
+    // BUTTON BOARD BUTTONS: 1 --> 4 GOES LEFT TO RIGHT
+    public static final int TOP_BUTTON_ONE = 4;
+    public static final int TOP_BUTTON_TWO = 3;
+    public static final int TOP_BUTTON_THREE = 2;
+    public static final int TOP_BUTTON_FOUR = 1;
+    public static final int BOTTOM_BUTTON_ONE = 8;
+    public static final int BOTTOM_BUTTON_TWO = 7;
+    public static final int BOTTOM_BUTTON_THREE = 6;
+    public static final int BOTTOM_BUTTON_FOUR = 5;
+
+
     public static final int LEFT_X_AXIS = 0;
     public static final int LEFT_Y_AXIS = 1;
     public static final int RIGHT_X_AXIS = 4;
@@ -63,6 +76,8 @@ public final class Constants {
     public static final int B_BUTTON = 2;
     public static final int X_BUTTON = 3;
     public static final int Y_BUTTON = 4;
+    public static final int BACK_BUTTON = 7;
+    public static final int START_BUTTON = 8;
     public static final int L_BUMP = 5;
     public static final int R_BUMP = 6;
     public static final int LT_AXIS = 2;
@@ -81,6 +96,7 @@ public final class Constants {
     public static final int CLIMBER_RIGHT = 9;
     public static final int INDEX_MOTOR = 10;
     public static final int ELEVATOR_MOTOR = 11;
+    public static final int WINCH_MOTOR = 12;
 
     public static final int LEFT_TRIGGER = 2;
 

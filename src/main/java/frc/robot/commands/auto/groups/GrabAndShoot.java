@@ -10,11 +10,12 @@ import frc.robot.commands.auto.Shoot;
 import frc.robot.subsystems.*;
 
 public class GrabAndShoot extends SequentialCommandGroup {
-    public GrabAndShoot(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter, boolean ballPreloaded) {
-        addCommands(new BallDrive(base, NetworkTableInstance.getDefault().getTable("data").getEntry("0")),
-                new Pickup(base, intake, index, elevator, shooter, ballPreloaded),
-                new LimelightAlign(base).alongWith(
-                    new BallDown(elevator, shooter, index, intake).withTimeout(0.25)),
-                new Shoot(elevator, shooter).withTimeout(2));
+    public GrabAndShoot(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter, boolean ballPreloaded, double rotDir) {
+        if(!ballPreloaded) addCommands(new BallDrive(base, NetworkTableInstance.getDefault().getTable("data").getEntry("0"), rotDir),
+                new Pickup(base, intake, index, elevator, shooter, ballPreloaded));
+
+        addCommands(new LimelightAlign(base, true).
+                        alongWith(new BallDown(elevator, shooter, index, intake).withTimeout(0.25)),
+                new Shoot(index, elevator, shooter).withTimeout(2));
     }
 }

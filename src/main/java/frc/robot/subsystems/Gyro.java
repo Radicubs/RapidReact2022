@@ -23,6 +23,10 @@ public class Gyro extends SubsystemBase {
         System.out.println("Gyro recalibrated to " + getAngle());
     }
 
+    @Override
+    public void periodic() {
+        System.out.println(gyro.getAngle());
+    }
     public Rotation2d getRotation2d() {
         return gyro.getRotation2d();
     }
