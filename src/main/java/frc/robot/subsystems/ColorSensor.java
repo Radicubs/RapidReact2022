@@ -29,6 +29,6 @@ public class ColorSensor extends SubsystemBase {
     public boolean isBlue() {return (((double) color.getBlue()) / color.getRed() > 1.5);}
 
     public void getDiagnostics() {
-        System.out.println((double) color.getRed() / color.getBlue());
+        //System.out.println((double) color.getRed() / color.getBlue());
     }
 }

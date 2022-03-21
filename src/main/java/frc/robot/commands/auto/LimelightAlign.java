@@ -52,7 +52,7 @@ public class LimelightAlign extends CommandBase {
 
         double zRot = -tx / 30;
         double forward = -ty / 13;
-        double sideways = -tx / 100;
+        double sideways = -tx / 90;
 
         MecanumDrive.WheelSpeeds speeds = driveCartesianIK(forward, sideways, zRot, 0);
 

@@ -30,6 +30,7 @@ public class Pickup extends CommandBase {
         interrupt = false;
         this.base = base;
         this.ballPreloaded = ballPreloaded;
+        counter = 0;
 
     }
 
@@ -38,9 +39,12 @@ public class Pickup extends CommandBase {
         intake.on();
         index.on();
         elevator.set(-0.35);
-        base.setPercent(-0.1, -0.1, -0.1, -0.1);
+        base.setPercent(-0.25, -0.25, -0.25, -0.25);
     }
 
+    public boolean hasBall() {
+        return seenColor;
+    }
 
     @Override
     public void execute() {
@@ -55,6 +59,10 @@ public class Pickup extends CommandBase {
             seenColor = true;
             isDone = true;
         }
+
+        counter++;
+
+        if(counter > 100) base.setPercent(0.1, 0.1, 0.1, 0.1);
 
         /*
         if (seenColor) {

@@ -13,7 +13,6 @@ public class BallDrive extends CommandBase {
     private boolean isFinished;
     private final double lowestBallPos = 295; //TODO
     private final double rotDir;
-    private final boolean isBlueTeam = true;
 
     public BallDrive(MecanumDriveBase base, NetworkTableEntry cam, double rotDir) {
         this.base = base;
@@ -42,7 +41,7 @@ public class BallDrive extends CommandBase {
         String[] entry = null;
 
         for(String e : ananthsDUmb) {
-            if(e.split(" ")[3].equals(isBlueTeam ? "blue" : "red")) {
+            if(e.split(" ")[3].equals(RobotContainer.isBlue.getSelected() ? "blue" : "red")) {
                 entry = e.split(" ");
                 break;
             }
@@ -56,9 +55,9 @@ public class BallDrive extends CommandBase {
         MecanumDrive.WheelSpeeds speeds;
         // 540 to 740
         if (Math.abs(error) > 400) {
-            speeds = MecanumDrive.driveCartesianIK(0, error / 2000, error / 2000, 0);
+            speeds = MecanumDrive.driveCartesianIK(0, error / 1700, error / 2000, 0);
         } else {
-            speeds = MecanumDrive.driveCartesianIK(-0.5, error / 500, error / 3000, 0);
+            speeds = MecanumDrive.driveCartesianIK(-0.5, error / 400, error / 3000, 0);
         }
 
 

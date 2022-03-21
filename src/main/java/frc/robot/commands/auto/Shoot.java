@@ -27,14 +27,14 @@ public class Shoot extends CommandBase {
     @Override
     public void initialize() {
         shooter.on();
-        elevator.on();
+        // elevator.on();
         index.on();
     }
 
     @Override
     public void execute() {
 
-        if (shooter.top.getSelectedSensorVelocity() > 1800 && shooter.bottom.getSelectedSensorVelocity() > 1800) {
+        if (shooter.top.getSelectedSensorVelocity() > 7000 && shooter.bottom.getSelectedSensorVelocity() > 7000) {
             elevator.on();
         }
 

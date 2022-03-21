@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -73,12 +74,12 @@ public class Shooter extends SubsystemBase implements StartableSystem {
         top.set(TalonFXControlMode.Velocity, speed);
         bottom.set(TalonFXControlMode.Velocity, speed);
 
-        System.out.println(top.getSelectedSensorVelocity());
-        System.out.println(bottom.getSelectedSensorVelocity());
+
+        NetworkTableInstance.getDefault().getTable("subs").getEntry("Shooter").setBoolean(motorSpeed > 0);
     }
 
     @Override
-    public void on() {motorSpeed = 0.37;}
+    public void on() {motorSpeed = 0.38;}
 
     public void shooterSlowForward() {motorSpeed = 0.1;}
 
