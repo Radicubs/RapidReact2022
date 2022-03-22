@@ -40,6 +40,7 @@ public class RobotContainer {
   public final Winch winch = new Winch();
 
   public static final UltrasonicSensor ultrasonic = new UltrasonicSensor();
+  public static final PhotoelectricSensor photoelectric = new PhotoelectricSensor(0);
 
   private SendableChooser<Command> chooser = new SendableChooser<>();
   public static SendableChooser<Boolean> isBlue = new SendableChooser<>();
