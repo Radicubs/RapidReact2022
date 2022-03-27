@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.BallDrive;
+import frc.robot.commands.MecanumDriveCommand;
 import frc.robot.commands.auto.groups.*;
 import frc.robot.commands.BallDown;
 
@@ -60,8 +61,12 @@ public class RobotContainer {
     table = NetworkTableInstance.getDefault().getTable("data");
     configureButtonBindings();
     chooser.setDefaultOption("Grab and Shoot", new GrabAndShoot(driveBase, intake, index, elevator, shooter, true, 0.333));
-    chooser.addOption("P1/2 Dual", new DualBall(driveBase, intake, index, elevator, shooter, -0.333));
-    chooser.addOption("P3/4 Dual", new DualBall(driveBase, intake, index, elevator, shooter, 0.333));
+    //chooser.addOption("P1SA", new P1SA(driveBase, intake, index, elevator, shooter));
+    chooser.addOption("P2SA", new P2SA(driveBase, intake, index, elevator, shooter));
+    chooser.addOption("P3SA", new P3SA(driveBase, intake, index, elevator, shooter));
+    chooser.addOption("P4SA", new P4SA(driveBase, intake, index, elevator, shooter));
+    //chooser.addOption("P1/2 Dual", new DualBall(driveBase, intake, index, elevator, shooter, -0.333));
+    //chooser.addOption("P3/4 Dual", new DualBall(driveBase, intake, index, elevator, shooter, 0.333));
     //chooser.addOption("P1SB", new DualBall(driveBase, intake, index, elevator, shooter));
     SmartDashboard.putData(chooser);
     SmartDashboard.updateValues();
@@ -83,7 +88,7 @@ public class RobotContainer {
     new JoystickButton(buttonBoard, Constants.TOP_BUTTON_ONE).whenHeld(new LimelightAlign(driveBase, false));
     new JoystickButton(buttonBoard, Constants.TOP_BUTTON_TWO).whenHeld(new BallDrive(driveBase,
             NetworkTableInstance.getDefault().getTable("data").getEntry("0"), 0.333));
-    new JoystickButton(buttonBoard, Constants.TOP_BUTTON_THREE);
+    new JoystickButton(buttonBoard, Constants.TOP_BUTTON_THREE);//.whenPressed(new MecanumDriveCommand(driveBase));
     new JoystickButton(buttonBoard, Constants.TOP_BUTTON_FOUR);
     new JoystickButton(buttonBoard, Constants.BOTTOM_BUTTON_ONE);
     new JoystickButton(buttonBoard, Constants.BOTTOM_BUTTON_TWO);

@@ -5,6 +5,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.MecanumDriveBase;
+import frc.robot.subsystems.Shooter;
+
 import static edu.wpi.first.wpilibj.drive.MecanumDrive.driveCartesianIK;
 
 
@@ -28,6 +30,11 @@ public class LimelightAlign extends CommandBase {
         this.isAuto = isAuto;
     }
 
+    public void initialize() {
+        //drive.getCurrentCommand().cancel();
+        isDone = false;
+    }
+
     @Override
     public void execute() {
         /*
@@ -38,7 +45,7 @@ public class LimelightAlign extends CommandBase {
 
         // System.out.println(table.getEntry("tv").getDouble(0));
         double tv = table.getEntry("tv").getDouble(0);
-        System.out.println(tv);
+        //System.out.println(tv);
         if(tv < 0.5) {
             if(isAuto) {drive.setPercent(-0.2, -0.2, -0.2, -0.2);}
             else {drive.setPercent(0.12, -0.12, -0.12, 0.12);}
@@ -50,9 +57,9 @@ public class LimelightAlign extends CommandBase {
 
         isDone = (Math.abs(tx) < limelightThreshold && Math.abs(ty) < limelightThreshold); // limelight threshold
 
-        double zRot = -tx / 30;
-        double forward = -ty / 13;
-        double sideways = -tx / 90;
+        double zRot = -tx / 40;
+        double forward = -ty / 15;
+        double sideways = -tx / 80;
 
         MecanumDrive.WheelSpeeds speeds = driveCartesianIK(forward, sideways, zRot, 0);
 

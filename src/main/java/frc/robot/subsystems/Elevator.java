@@ -5,7 +5,7 @@ import frc.robot.Constants;
 
 public class Elevator extends OnOffSystem {
 
-    public Elevator() {super(Constants.ELEVATOR_MOTOR, -0.45, "Elevator");}
+    public Elevator() {super(Constants.ELEVATOR_MOTOR, -0.5, "Elevator");}
 
     public void set(double speed) {motorSpeed = speed;}
 }

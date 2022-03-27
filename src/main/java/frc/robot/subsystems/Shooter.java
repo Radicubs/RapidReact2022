@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -24,8 +26,22 @@ public class Shooter extends SubsystemBase implements StartableSystem {
     private final double kP = 0.23;
     private final double kI = 0.004;
     private final double kD = 0.8;
+    private SendableChooser<Double> speed;
 
     public Shooter() {
+        speed = new SendableChooser<>();
+        speed.setDefaultOption("38", 0.38);
+        speed.addOption("39", 0.39);
+        speed.addOption("40", 0.40);
+        speed.addOption("41", 0.41);
+        speed.addOption("42", 0.42);
+        speed.addOption("37", 0.37);
+        speed.addOption("36", 0.36);
+        speed.addOption("35", 0.35);
+        SmartDashboard.putData(speed);
+        SmartDashboard.updateValues();
+
+
         top = new WPI_TalonFX(Constants.SHOOTER_TOP);
         bottom = new WPI_TalonFX(Constants.SHOOTER_BOTTOM);
         top.configFactoryDefault();
@@ -74,12 +90,14 @@ public class Shooter extends SubsystemBase implements StartableSystem {
         top.set(TalonFXControlMode.Velocity, speed);
         bottom.set(TalonFXControlMode.Velocity, speed);
 
+        //System.out.println(top.getSelectedSensorVelocity());
+        //System.out.println(speed);
 
         NetworkTableInstance.getDefault().getTable("subs").getEntry("Shooter").setBoolean(motorSpeed > 0);
     }
 
     @Override
-    public void on() {motorSpeed = 0.38;}
+    public void on() {motorSpeed = speed.getSelected();}
 
     public void shooterSlowForward() {motorSpeed = 0.1;}
 

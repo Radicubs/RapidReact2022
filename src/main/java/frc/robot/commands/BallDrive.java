@@ -57,7 +57,7 @@ public class BallDrive extends CommandBase {
         if (Math.abs(error) > 400) {
             speeds = MecanumDrive.driveCartesianIK(0, error / 1700, error / 2000, 0);
         } else {
-            speeds = MecanumDrive.driveCartesianIK(-0.5, error / 400, error / 3000, 0);
+            speeds = MecanumDrive.driveCartesianIK(-0.65, error / 400, error / 3000, 0);
         }
 
 
