@@ -4,5 +4,5 @@ import frc.robot.Constants;
 
 public class Intake extends OnOffSystem {
 
-    public Intake() {super(Constants.INTAKE_MOTOR, -0.25);}
+    public Intake() {super(Constants.INTAKE_MOTOR, -0.45, "Intake");}
 }

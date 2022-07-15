@@ -25,7 +25,7 @@ public class Gyro extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println(gyro.getAngle());
+        //System.out.println(gyro.getAngle());
     }
     public Rotation2d getRotation2d() {
         return gyro.getRotation2d();

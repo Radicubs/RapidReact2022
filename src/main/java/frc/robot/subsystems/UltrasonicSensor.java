@@ -14,9 +14,9 @@ public class UltrasonicSensor extends SubsystemBase {
     // possibly try return ultrasonic.get() * 5;
     public double getRange() {return ultrasonic.getValue();}
 
-    @Override
-    public void periodic() {
-        System.out.println("Ultrasonic: " + getRange());
-    }
+    //@Override
+    //public void periodic() {
+        //System.out.println("Ultrasonic: " + getRange());
+    //}
 
 }

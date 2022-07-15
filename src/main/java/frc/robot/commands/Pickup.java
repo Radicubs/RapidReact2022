@@ -12,25 +12,27 @@ public class Pickup extends CommandBase {
     private final Index index;
     private final Elevator elevator;
     private final Shooter shooter;
-    private boolean interrupt;
     private int counter;
     private boolean seenColor;
     private final MecanumDriveBase base;
-    private final boolean ballPreloaded;
+    private final double percent;
     private boolean isDone = false;
 
     public Pickup(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter, boolean ballPreloaded) {
-        
+        this(base, intake, index, elevator, shooter, -0.25);
+    }
+
+    public Pickup(MecanumDriveBase base, Intake intake, Index index, Elevator elevator, Shooter shooter, double percent) {
+
         addRequirements(base, intake, index, elevator, shooter);
 
         this.index = index;
         this.intake = intake;
         this.elevator = elevator;
         this.shooter = shooter;
-        interrupt = false;
         this.base = base;
-        this.ballPreloaded = ballPreloaded;
-
+        counter = 0;
+        this.percent = percent;
     }
 
     @Override
@@ -38,9 +40,12 @@ public class Pickup extends CommandBase {
         intake.on();
         index.on();
         elevator.set(-0.35);
-        base.setPercent(-0.1, -0.1, -0.1, -0.1);
+        base.setPercent(percent, percent, percent, percent);
     }
 
+    public boolean hasBall() {
+        return seenColor;
+    }
 
     @Override
     public void execute() {
@@ -55,6 +60,10 @@ public class Pickup extends CommandBase {
             seenColor = true;
             isDone = true;
         }
+
+        counter++;
+
+        if(counter > 100) base.setPercent(0.1, 0.1, 0.1, 0.1);
 
         /*
         if (seenColor) {
@@ -89,5 +98,6 @@ public class Pickup extends CommandBase {
         shooter.off();
         index.off();
         intake.off();
+        base.setPercent(0, 0, 0, 0);
     }
 }

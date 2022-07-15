@@ -33,8 +33,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     PortForwarder.add(8888, "10.75.3.69", 22);
-    CameraServer.startAutomaticCapture();
-    CameraServer.putVideo("WebcamStream", 640, 480);
 
   }
 
